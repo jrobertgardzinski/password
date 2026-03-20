@@ -16,6 +16,7 @@
     <modules>
         <module>password-domain</module>
         <module>password-application-security</module>
+        <module>hash-algorithms</module>
     </modules>
 
     <dependencyManagement>
