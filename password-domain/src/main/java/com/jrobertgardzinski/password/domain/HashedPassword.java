@@ -5,10 +5,10 @@ import java.util.Objects;
 /**
  * Hashed password value object. Produced by a hash algorithm, never constructed directly.
  */
-public final class PasswordHash {
+public final class HashedPassword {
     private final String value;
 
-    public PasswordHash(String value) {
+    public HashedPassword(String value) {
         this.value = value;
     }
 
@@ -20,7 +20,7 @@ public final class PasswordHash {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PasswordHash that = (PasswordHash) o;
+        HashedPassword that = (HashedPassword) o;
         return Objects.equals(value, that.value);
     }
 

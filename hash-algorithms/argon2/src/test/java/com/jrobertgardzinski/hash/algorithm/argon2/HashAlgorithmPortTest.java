@@ -1,7 +1,7 @@
 package com.jrobertgardzinski.hash.algorithm.argon2;
 
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
-import com.jrobertgardzinski.password.domain.PasswordHash;
+import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ public abstract class HashAlgorithmPortTest {
 
     protected abstract HashAlgorithmPort hashAlgorithm();
 
-    private PasswordHash hash;
+    private HashedPassword hash;
 
     @BeforeEach
     void init() {

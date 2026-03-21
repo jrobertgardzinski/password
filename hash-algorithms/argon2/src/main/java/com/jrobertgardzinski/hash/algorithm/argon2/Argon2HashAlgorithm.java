@@ -1,7 +1,7 @@
 package com.jrobertgardzinski.hash.algorithm.argon2;
 
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
-import com.jrobertgardzinski.password.domain.PasswordHash;
+import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -14,15 +14,15 @@ public class Argon2HashAlgorithm implements HashAlgorithmPort {
     static final Argon2 argon2 = Argon2Factory.create();
 
     @Override
-    public PasswordHash hash(PlaintextPassword plaintextPassword) {
+    public HashedPassword hash(PlaintextPassword plaintextPassword) {
         String hash = argon2.hash(ITERATIONS, MEM_LIMIT, PARALLELISM, plaintextPassword.value().getBytes());
-        return new PasswordHash(hash);
+        return new HashedPassword(hash);
     }
 
     @Override
-    public boolean verify(PasswordHash passwordHash, PlaintextPassword plaintextPassword) {
+    public boolean verify(HashedPassword hashedPassword, PlaintextPassword plaintextPassword) {
         return argon2.verify(
-                passwordHash.value(),
+                hashedPassword.value(),
                 plaintextPassword.value().getBytes()
         );
     }

@@ -5,12 +5,12 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
-class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
+public class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private final String specialChars;
     private final Pattern pattern;
 
-    _ContainsSpecialCharConstraint(String specialChars) {
+    public _ContainsSpecialCharConstraint(String specialChars) {
         this.specialChars = specialChars;
         this.pattern = Pattern.compile("[" + Pattern.quote(specialChars) + "]");
     }
