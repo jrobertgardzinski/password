@@ -9,6 +9,8 @@ import java.util.Objects;
  */
 public final class PlaintextPassword {
 
+    public static final String REDACTED = "REDACTED";
+
     private final String value;
 
     private PlaintextPassword(String value) {
@@ -42,6 +44,6 @@ public final class PlaintextPassword {
     /** Redacted intentionally — never log plaintext passwords. */
     @Override
     public String toString() {
-        return "PlaintextPassword[value=REDACTED]";
+        return "PlaintextPassword[value=" + REDACTED + "]";
     }
 }
