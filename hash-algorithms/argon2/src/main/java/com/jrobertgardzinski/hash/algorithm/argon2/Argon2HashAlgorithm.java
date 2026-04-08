@@ -8,14 +8,21 @@ import de.mkammerer.argon2.Argon2Factory;
 
 public class Argon2HashAlgorithm implements HashAlgorithmPort {
 
-    static final int ITERATIONS = 20;
-    static final int MEM_LIMIT = 66536;
-    static final int PARALLELISM = 1;
-    static final Argon2 argon2 = Argon2Factory.create();
+    private static final Argon2 argon2 = Argon2Factory.create();
+
+    private final Argon2Config config;
+
+    public Argon2HashAlgorithm() {
+        this(Argon2Config.builder().build());
+    }
+
+    public Argon2HashAlgorithm(Argon2Config config) {
+        this.config = config;
+    }
 
     @Override
     public HashedPassword hash(PlaintextPassword plaintextPassword) {
-        String hash = argon2.hash(ITERATIONS, MEM_LIMIT, PARALLELISM, plaintextPassword.value().getBytes());
+        String hash = argon2.hash(config.iterations(), config.memLimit(), config.parallelism(), plaintextPassword.value().getBytes());
         return new HashedPassword(hash);
     }
 
