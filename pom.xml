@@ -27,6 +27,7 @@
                     <configuration>
                         <systemPropertyVariables>
                             <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                            <jqwik.database>${project.build.directory}/.jqwik-database</jqwik.database>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -42,21 +43,13 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Force JUnit Platform alignment — allure-junit5:2.27.0 pulls launcher:1.9.2 -->
+            <!-- Full BOM import — aligns all JUnit Platform components including engine (needed by jqwik) -->
             <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-launcher</artifactId>
-                <version>1.14.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-commons</artifactId>
-                <version>1.14.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
                 <version>5.14.0</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
