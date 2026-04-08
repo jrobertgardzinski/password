@@ -29,8 +29,9 @@ public final class HashedPassword {
         return Objects.hash(value);
     }
 
+    /** Redacted intentionally — never log hashed passwords. */
     @Override
     public String toString() {
-        return "PasswordHash[value=" + value + "]";
+        return "PasswordHash[***]";
     }
 }

@@ -1,3 +1,4 @@
+@allure.label.epic:Application @allure.label.feature:Password-Validation
 Feature: Password Validation
 
   Background:
