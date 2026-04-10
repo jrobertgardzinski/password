@@ -13,7 +13,7 @@ public class Argon2HashAlgorithm implements HashAlgorithmPort {
     private final Argon2Config config;
 
     public Argon2HashAlgorithm() {
-        this(Argon2Config.builder().build());
+        this(Argon2Config.withDefaults());
     }
 
     public Argon2HashAlgorithm(Argon2Config config) {
