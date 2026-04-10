@@ -22,7 +22,7 @@ public class Argon2HashAlgorithm implements HashAlgorithmPort {
 
     @Override
     public HashedPassword hash(PlaintextPassword plaintextPassword) {
-        String hash = argon2.hash(config.iterations(), config.memLimit(), config.parallelism(), plaintextPassword.value().getBytes());
+        String hash = argon2.hash(config.iterations().value(), config.memLimit().value(), config.parallelism().value(), plaintextPassword.value().getBytes());
         return new HashedPassword(hash);
     }
 
