@@ -2,13 +2,7 @@ package com.jrobertgardzinski.hash.algorithm.argon2;
 
 import com.jrobertgardzinski.config.source.properties.PropertiesConfigPort;
 
-public record Argon2Config(int iterations, int memLimit, int parallelism) {
-
-    public Argon2Config {
-        if (iterations < 1) throw new IllegalArgumentException("iterations must be at least 1");
-        if (memLimit < 1) throw new IllegalArgumentException("memLimit must be at least 1");
-        if (parallelism < 1) throw new IllegalArgumentException("parallelism must be at least 1");
-    }
+public record Argon2Config(Iterations iterations, MemLimitInKB memLimit, Parallelism parallelism) {
 
     public static Argon2Config from(PropertiesConfigPort<String> source) {
         return builder()
@@ -52,7 +46,7 @@ public record Argon2Config(int iterations, int memLimit, int parallelism) {
         }
 
         public Argon2Config build() {
-            return new Argon2Config(iterations, memLimit, parallelism);
+            return new Argon2Config(new Iterations(iterations), new MemLimitInKB(memLimit), new Parallelism(parallelism));
         }
     }
 }
