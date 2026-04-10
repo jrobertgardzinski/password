@@ -14,7 +14,7 @@ public class OptimalNumberOfIterations {
     public static void main(String[] args) {
         long REQUIRED_CALCULATION_TIME = 1000;
 
-        Argon2Config config = Argon2Config.builder().build();
+        Argon2Config config = Argon2Config.withDefaults();
         Argon2 argon2 = Argon2Factory.create();
         int iterations = Argon2Helper.findIterations(argon2, REQUIRED_CALCULATION_TIME, config.memLimit(), config.parallelism());
 

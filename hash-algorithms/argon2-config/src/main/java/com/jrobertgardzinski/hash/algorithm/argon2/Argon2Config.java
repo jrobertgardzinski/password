@@ -17,14 +17,18 @@ public record Argon2Config(Iterations iterations, MemLimitInKB memLimit, Paralle
         return value != null ? Integer.parseInt(value) : defaultValue;
     }
 
+    public static Argon2Config withDefaults() {
+        return builder().build();
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        static final int DEFAULT_ITERATIONS = 20;
-        static final int DEFAULT_MEM_LIMIT = 66536;
-        static final int DEFAULT_PARALLELISM = 1;
+        public static final int DEFAULT_ITERATIONS = 3;
+        public static final int DEFAULT_MEM_LIMIT = 65536;
+        public static final int DEFAULT_PARALLELISM = 1;
 
         private int iterations = DEFAULT_ITERATIONS;
         private int memLimit = DEFAULT_MEM_LIMIT;
