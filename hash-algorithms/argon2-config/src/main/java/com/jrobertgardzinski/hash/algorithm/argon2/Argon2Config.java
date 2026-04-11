@@ -11,13 +11,9 @@ public record Argon2Config(Iterations iterations, MemLimitInKB memLimit, Paralle
     }
 
     public static class Builder {
-        public static final int DEFAULT_ITERATIONS = 3;
-        public static final int DEFAULT_MEM_LIMIT = 65536;
-        public static final int DEFAULT_PARALLELISM = 1;
-
-        private int iterations = DEFAULT_ITERATIONS;
-        private int memLimit = DEFAULT_MEM_LIMIT;
-        private int parallelism = DEFAULT_PARALLELISM;
+        private int iterations = Iterations.DEFAULT;
+        private int memLimit = MemLimitInKB.DEFAULT;
+        private int parallelism = Parallelism.DEFAULT;
 
         public Builder iterations(int iterations) {
             this.iterations = iterations;
