@@ -11,22 +11,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class HashAlgorithmPortTest {
 
+    private static final String INPUT = "StrongPassword1!";
+
     protected abstract HashAlgorithmPort hashAlgorithm();
 
     private HashedPassword hash;
 
     @BeforeEach
     void init() {
-        hash = hashAlgorithm().hash(PlaintextPassword.of("StrongPassword1!"));
+        hash = hashAlgorithm().hash(PlaintextPassword.of(INPUT));
     }
 
     @Test
     void correctPasswordVerifies() {
-        assertTrue(hashAlgorithm().verify(hash, PlaintextPassword.of("StrongPassword1!")));
+        assertTrue(hashAlgorithm().verify(hash, PlaintextPassword.of(INPUT)));
     }
 
     @Test
     void wrongPasswordDoesNotVerify() {
-        assertFalse(hashAlgorithm().verify(hash, PlaintextPassword.of("StrongPassword2!")));
+        assertFalse(hashAlgorithm().verify(hash, PlaintextPassword.of(INPUT + "23")));
     }
 }
