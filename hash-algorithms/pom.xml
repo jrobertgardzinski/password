@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>hash-algorithm-contract</module>
         <module>argon2-config</module>
         <module>argon2</module>
     </modules>
