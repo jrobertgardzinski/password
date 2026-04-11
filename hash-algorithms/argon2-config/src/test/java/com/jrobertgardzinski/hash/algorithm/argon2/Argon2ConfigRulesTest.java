@@ -5,18 +5,22 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import net.jqwik.api.*;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Epic("Hash Algorithms")
 @Feature("Argon2 Configuration")
 class Argon2ConfigRulesTest {
 
-    @Property
-    @Label("Applies defaults when properties are absent")
-    void appliesDefaultsWhenPropertiesAbsent() {
-        assertThat(Argon2Config.builder().build()).isEqualTo(Argon2Config.withDefaults());
+    @Example
+    @Label("Builder without values produces defaults")
+    void builderWithoutValuesProducesDefaults() {
+        Allure.parameter("default", Argon2Config.withDefaults());
+
+        Argon2Config config = Argon2Config.builder().build();
+
+        assertThat(config.iterations().value()).isEqualTo(Iterations.DEFAULT);
+        assertThat(config.memLimit().value()).isEqualTo(MemLimitInKB.DEFAULT);
+        assertThat(config.parallelism().value()).isEqualTo(Parallelism.DEFAULT);
     }
 
 }
