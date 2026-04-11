@@ -1,21 +1,6 @@
 package com.jrobertgardzinski.hash.algorithm.argon2;
 
-import com.jrobertgardzinski.config.source.properties.PropertiesConfigPort;
-
 public record Argon2Config(Iterations iterations, MemLimitInKB memLimit, Parallelism parallelism) {
-
-    public static Argon2Config from(PropertiesConfigPort<String> source) {
-        return builder()
-                .iterations(intOrDefault(source, "argon2.iterations", Builder.DEFAULT_ITERATIONS))
-                .memLimit(intOrDefault(source, "argon2.memLimit", Builder.DEFAULT_MEM_LIMIT))
-                .parallelism(intOrDefault(source, "argon2.parallelism", Builder.DEFAULT_PARALLELISM))
-                .build();
-    }
-
-    private static int intOrDefault(PropertiesConfigPort<String> source, String key, int defaultValue) {
-        String value = source.get(key);
-        return value != null ? Integer.parseInt(value) : defaultValue;
-    }
 
     public static Argon2Config withDefaults() {
         return builder().build();
