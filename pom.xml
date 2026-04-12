@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jrobertgardzinski</groupId>
     <artifactId>password</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -59,12 +59,12 @@
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>unit-test-starter</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>constraint</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>config</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
@@ -89,7 +89,7 @@
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>bdd-test-starter</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
