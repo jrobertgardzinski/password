@@ -42,7 +42,8 @@
 
     <modules>
         <module>password-domain</module>
-        <module>password-application-security</module>
+        <module>password-security-config</module>
+        <module>password-security-system</module>
         <module>hash-algorithms</module>
     </modules>
 
@@ -69,6 +70,11 @@
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>password-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jrobertgardzinski</groupId>
+                <artifactId>password-security-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
