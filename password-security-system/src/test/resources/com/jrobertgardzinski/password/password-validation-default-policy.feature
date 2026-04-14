@@ -1,4 +1,4 @@
-@allure.label.epic:Password @allure.label.feature:Password-Validation
+@allure.label.epic:Use-case @allure.label.feature:Password-Validation
 Feature: Password Validation - Default Policy
 
   Background:
