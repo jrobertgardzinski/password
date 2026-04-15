@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PasswordPolicyRulesTest {
 
     @Example
-    @Label("withDefaults() produces expected configuration")
+    @Label("withDefaults() produces DEFAULT CONFIGURATION")
     void withDefaultsProducesExpectedConfiguration() {
-        Allure.parameter("default", PasswordPolicy.withDefaults());
+        Allure.parameter("DEFAULT CONFIGURATION", PasswordPolicy.withDefaults());
 
         PasswordPolicy policy = PasswordPolicy.withDefaults();
 
@@ -26,7 +26,7 @@ class PasswordPolicyRulesTest {
     }
 
     @Example
-    @Label("custom policy retains provided configuration")
+    @Label("custom policy retains PROVIDED CONFIGURATION")
     void customPolicyRetainsProvidedConfiguration() {
         MinLength minLength = new MinLength(8);
         SpecialChars specialChars = new SpecialChars("$%");
@@ -42,6 +42,8 @@ class PasswordPolicyRulesTest {
 
         PasswordPolicy policy = new PasswordPolicy(
                 minLength, specialChars, requiresUppercase, requiresLowercase, requiresDigit);
+
+        Allure.parameter("PROVIDED CONFIGURATION", policy);
 
         assertThat(policy.minLength()).isEqualTo(minLength);
         assertThat(policy.specialChars()).isEqualTo(specialChars);

@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>com.jrobertgardzinski</groupId>
-            <artifactId>system-test-starter</artifactId>
+            <artifactId>unit-test-starter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

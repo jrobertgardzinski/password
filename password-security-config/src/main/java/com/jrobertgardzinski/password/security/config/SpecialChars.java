@@ -12,5 +12,7 @@ public record SpecialChars(String value) {
             if (ALLOWED.indexOf(c) < 0)
                 throw new IllegalArgumentException("character not in allowed set: '" + c + "'");
         }
+        if (value.chars().distinct().count() != value.length())
+            throw new IllegalArgumentException("specialChars must not contain duplicate characters");
     }
 }

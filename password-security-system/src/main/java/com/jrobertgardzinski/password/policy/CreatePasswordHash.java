@@ -4,21 +4,26 @@ import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.util.constraint.Constraint;
+import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.List;
 
 public class CreatePasswordHash {
 
     private final HashAlgorithmPort hashAlgorithm;
-    private final PasswordPolicy policy;
+    private final List<ErrorConstraint<PlaintextPassword>> constraints;
 
     public CreatePasswordHash(HashAlgorithmPort hashAlgorithm, PasswordPolicy policy) {
+        this(hashAlgorithm, policy.constraints());
+    }
+
+    CreatePasswordHash(HashAlgorithmPort hashAlgorithm, List<ErrorConstraint<PlaintextPassword>> constraints) {
         this.hashAlgorithm = hashAlgorithm;
-        this.policy = policy;
+        this.constraints = constraints;
     }
 
     public PasswordHashCreation create(PlaintextPassword password) {
-        List<String> codes = policy.constraints().stream()
+        List<String> codes = constraints.stream()
                 .filter(c -> !c.isSatisfied(password))
                 .map(Constraint::code)
                 .toList();
