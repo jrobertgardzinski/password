@@ -31,14 +31,14 @@ class MinLengthRulesTest {
     @Provide
     Arbitrary<Tuple.Tuple2<String, Integer>> validValues() {
         return Arbitraries.of(
-                Tuple.of("BOUNDARY", MinLength.BOUNDARY)
+                Tuple.of("MIN", MinLength.BOUNDARY)
         );
     }
 
     @Provide
     Arbitrary<Tuple.Tuple2<String, Integer>> invalidValues() {
         return Arbitraries.of(
-                Tuple.of("BOUNDARY - 1", MinLength.BOUNDARY - 1)
+                Tuple.of("MIN - 1", MinLength.BOUNDARY - 1)
         );
     }
 }

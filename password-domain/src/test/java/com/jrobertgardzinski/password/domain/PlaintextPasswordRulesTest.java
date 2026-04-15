@@ -1,12 +1,11 @@
 package com.jrobertgardzinski.password.domain;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import net.jqwik.api.*;
 import net.jqwik.api.constraints.AlphaChars;
 import net.jqwik.api.constraints.StringLength;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Feature("PlaintextPassword")
 class PlaintextPasswordRulesTest {
 
-    @Test
-    @DisplayName("Invariant: Rejects null")
+    @Example
+    @Label("Invariant: rejects null")
     void rejectsNull() {
         assertThrows(IllegalArgumentException.class, () -> PlaintextPassword.of(null));
     }
@@ -24,6 +23,9 @@ class PlaintextPasswordRulesTest {
     @Property(tries = 20)
     @Label("Security: toString() does not reveal plaintext")
     void toStringDoesNotRevealPlaintext(@ForAll @StringLength(min = 1) @AlphaChars String value) {
-        assertThat(PlaintextPassword.of(value).toString()).contains(PlaintextPassword.REDACTED);
+        PlaintextPassword password = PlaintextPassword.of(value);
+        Allure.parameter("password", value);
+        Allure.parameter("toString()", password.toString());
+        assertThat(password.toString()).contains(PlaintextPassword.REDACTED);
     }
 }

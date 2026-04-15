@@ -31,14 +31,14 @@ class IterationsRulesTest {
     @Provide
     Arbitrary<Tuple.Tuple2<String, Integer>> validValues() {
         return Arbitraries.of(
-                Tuple.of("BOUNDARY", Iterations.BOUNDARY)
+                Tuple.of("MIN", Iterations.BOUNDARY)
         );
     }
 
     @Provide
     Arbitrary<Tuple.Tuple2<String, Integer>> invalidValues() {
         return Arbitraries.of(
-                Tuple.of("BOUNDARY - 1", Iterations.BOUNDARY - 1)
+                Tuple.of("MIN - 1", Iterations.BOUNDARY - 1)
         );
     }
 }
