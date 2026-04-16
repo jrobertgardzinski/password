@@ -3,7 +3,7 @@ package com.jrobertgardzinski.password.domain;
 import java.util.Objects;
 
 /**
- * Hashed password value object. Produced by a hash algorithm, never constructed directly.
+ * A password transformed by a hashing algorithm, safe for storage.
  */
 public final class HashedPassword {
     private final String value;

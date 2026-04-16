@@ -3,9 +3,7 @@ package com.jrobertgardzinski.password.domain;
 import java.util.Objects;
 
 /**
- * Plaintext password value object.
- * Enforces only that the value is not blank — strength rules live in CanSetPassword.
- * Never exposes the raw value in toString() to prevent accidental logging.
+ * A password as entered by the user, before hashing.
  */
 public final class PlaintextPassword {
 
