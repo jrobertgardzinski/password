@@ -17,7 +17,7 @@ public record PasswordPolicy(
 
     public static PasswordPolicy withDefaults() {
         return new PasswordPolicy(
-                new MinLength(12),
+                MinLength.DEFAULT,
                 SpecialChars.DEFAULT,
                 RequiresUppercase.DEFAULT,
                 RequiresLowercase.DEFAULT,

@@ -5,17 +5,17 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
-public class _ContainsDigitConstraint extends ErrorConstraint<PlaintextPassword> {
+class _ContainsUppercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
-    private static final Pattern DIGIT = Pattern.compile("\\d");
+    private static final Pattern UPPERCASE = Pattern.compile("[A-Z]");
 
     @Override
     public boolean isSatisfied(PlaintextPassword candidate) {
-        return DIGIT.matcher(candidate.value()).find();
+        return UPPERCASE.matcher(candidate.value()).find();
     }
 
     @Override
     public String code() {
-        return "DIGIT_REQUIRED";
+        return "UPPERCASE_REQUIRED";
     }
 }
