@@ -4,7 +4,7 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.security.config.MinLength;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
-public class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
+class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private final MinLength minLength;
 

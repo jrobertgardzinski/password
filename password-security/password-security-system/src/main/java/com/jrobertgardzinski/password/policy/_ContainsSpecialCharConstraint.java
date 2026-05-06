@@ -6,7 +6,7 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
-public class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
+class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private final Pattern pattern;
 

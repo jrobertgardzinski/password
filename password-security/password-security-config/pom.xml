@@ -5,11 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jrobertgardzinski</groupId>
-        <artifactId>hash-algorithms</artifactId>
+        <artifactId>password-security</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>argon2-config</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>password-security-config</artifactId>
     <packaging>jar</packaging>
-
 </project>

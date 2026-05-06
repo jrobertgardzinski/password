@@ -8,27 +8,16 @@
         <artifactId>hash-algorithms</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>hash-algorithm-contract</artifactId>
+    <artifactId>hash-algorithm-contract-test</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.jrobertgardzinski</groupId>
-            <artifactId>password-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jrobertgardzinski</groupId>
-            <artifactId>unit-test-starter</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -39,4 +28,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.jrobertgardzinski</groupId>
+            <artifactId>password-domain</artifactId>
+        </dependency>
+    </dependencies>
 </project>
