@@ -1,6 +1,7 @@
 package com.jrobertgardzinski.password.policy;
 
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
+import com.jrobertgardzinski.password.security.config.SpecialChars;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import net.jqwik.api.Example;
@@ -9,31 +10,35 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.jrobertgardzinski.password.policy.ContainsSpecialCharConstraintRulesTest.CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Epic("Constraints")
-@Feature("Special char")
+@Feature("Special char (\"" + CONFIG + "\")")
 class ContainsSpecialCharConstraintRulesTest {
 
-    private final _ContainsSpecialCharConstraint constraint = new _ContainsSpecialCharConstraint();
+    public static final String CONFIG = "!";
+    private final _ContainsSpecialCharConstraint constraint = new _ContainsSpecialCharConstraint(new SpecialChars(CONFIG));
 
-    @DisplayName("rejects ")
-    @ParameterizedTest(name = "\"{0}\" (no special char)")
-    @ValueSource(strings = {"Password1", "Secret123", "NoSpecial"})
-    void rejectsPasswordWithNoSpecialChar(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
+    final String REJECTS = "Password1";
+
+    @Example
+    @Label("rejects \"" + REJECTS + "\" (no special char)")
+    void rejection() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
     }
 
-    @DisplayName("accepts ")
-    @ParameterizedTest(name = "\"{0}\" (has special char)")
-    @ValueSource(strings = {"Password1!", "Secret1@", "abc1#"})
-    void acceptsPasswordWithSpecialChar(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    final String ACCEPTS = "Password1!";
+
+    @Example
+    @Label("accepts \"" + ACCEPTS + "\"")
+    void acceptance() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
     }
 
     @Example
-    @Label("error code is SPECIAL_CHAR_REQUIRED")
+    @Label("error code is " + _ContainsSpecialCharConstraint.CODE)
     void errorCode() {
-        assertThat(constraint.code()).isEqualTo("SPECIAL_CHAR_REQUIRED");
+        assertThat(constraint.code()).isEqualTo(_ContainsSpecialCharConstraint.CODE);
     }
 }

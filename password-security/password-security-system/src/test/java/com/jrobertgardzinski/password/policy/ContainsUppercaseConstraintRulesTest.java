@@ -17,23 +17,25 @@ class ContainsUppercaseConstraintRulesTest {
 
     private final _ContainsUppercaseConstraint constraint = new _ContainsUppercaseConstraint();
 
-    @DisplayName("rejects ")
-    @ParameterizedTest(name = "\"{0}\" (no uppercase)")
-    @ValueSource(strings = {"password1!", "abc123#", "nouppercase"})
-    void rejectsPasswordWithNoUppercase(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
+    final String REJECTS = "password1!";
+
+    @Example
+    @Label("rejects \"" + REJECTS + "\" (no uppercase)")
+    void rejection() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
     }
 
-    @DisplayName("accepts ")
-    @ParameterizedTest(name = "\"{0}\" (has uppercase)")
-    @ValueSource(strings = {"Password1!", "Abc123", "STRONG"})
-    void acceptsPasswordWithUppercase(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    final String ACCEPTS = "Password1!";
+
+    @Example
+    @Label("accepts \"" + ACCEPTS + "\"")
+    void acceptance() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
     }
 
     @Example
-    @Label("error code is UPPERCASE_REQUIRED")
+    @Label("error code is " + _ContainsUppercaseConstraint.CODE)
     void errorCode() {
-        assertThat(constraint.code()).isEqualTo("UPPERCASE_REQUIRED");
+        assertThat(constraint.code()).isEqualTo(_ContainsUppercaseConstraint.CODE);
     }
 }

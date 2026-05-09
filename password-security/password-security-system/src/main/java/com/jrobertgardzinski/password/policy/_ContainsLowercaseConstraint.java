@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 class _ContainsLowercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private static final Pattern LOWERCASE = Pattern.compile("[a-z]");
+    static final String CODE = "LOWERCASE_REQUIRED";
 
     @Override
     public boolean isSatisfied(PlaintextPassword candidate) {
@@ -16,6 +17,6 @@ class _ContainsLowercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
     @Override
     public String code() {
-        return "LOWERCASE_REQUIRED";
+        return CODE;
     }
 }

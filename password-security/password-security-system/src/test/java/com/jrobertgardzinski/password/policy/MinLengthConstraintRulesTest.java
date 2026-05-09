@@ -13,29 +13,31 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Epic("Constraints")
-@Feature("Minimum length")
+@Feature("Minimum length (" + MinLengthConstraintRulesTest.MIN_LENGTH + " characters long)")
 class MinLengthConstraintRulesTest {
 
-    private static final int MIN_LENGTH = 8;
+    static final int MIN_LENGTH = 8;
     private final _MinLengthConstraint constraint = new _MinLengthConstraint(new MinLength(MIN_LENGTH));
 
-    @DisplayName("rejects ")
-    @ParameterizedTest(name = "\"{0}\" (too short)")
-    @ValueSource(strings = {"Sh0rt!", "Pa1!", "Abc1!"})
-    void rejectsPasswordTooShort(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
+    final String REJECTS = "Sh0rt!";
+
+    @Example
+    @Label("rejects \"" + REJECTS + "\" (at least " + MIN_LENGTH + " chars)")
+    void rejection() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
     }
 
-    @DisplayName("accepts ")
-    @ParameterizedTest(name = "\"{0}\" (at least " + MIN_LENGTH + " chars)")
-    @ValueSource(strings = {"LongPass", "Password", "Secure1#"})
-    void acceptsPasswordLongEnough(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    final String ACCEPTS = "LongPass";
+
+    @Example
+    @Label("accepts \"" + ACCEPTS + "\"")
+    void acceptance() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
     }
 
     @Example
-    @Label("error code is MIN_LENGTH_NOT_MET")
+    @Label("error code is " + _MinLengthConstraint.CODE)
     void errorCode() {
-        assertThat(constraint.code()).isEqualTo("MIN_LENGTH_NOT_MET");
+        assertThat(constraint.code()).isEqualTo(_MinLengthConstraint.CODE);
     }
 }

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 class _ContainsUppercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private static final Pattern UPPERCASE = Pattern.compile("[A-Z]");
+    static final String CODE = "UPPERCASE_REQUIRED";
 
     @Override
     public boolean isSatisfied(PlaintextPassword candidate) {
@@ -16,6 +17,6 @@ class _ContainsUppercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
     @Override
     public String code() {
-        return "UPPERCASE_REQUIRED";
+        return CODE;
     }
 }
