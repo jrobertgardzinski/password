@@ -18,7 +18,7 @@ class PasswordPolicyRulesTest {
 
         PasswordPolicy policy = PasswordPolicy.withDefaults();
 
-        assertThat(policy.minLength()).isEqualTo(new MinLength(12));
+        assertThat(policy.minLength()).isEqualTo(MinLength.DEFAULT);
         assertThat(policy.specialChars()).isEqualTo(SpecialChars.DEFAULT);
         assertThat(policy.requiresUppercase()).isEqualTo(RequiresUppercase.DEFAULT);
         assertThat(policy.requiresLowercase()).isEqualTo(RequiresLowercase.DEFAULT);

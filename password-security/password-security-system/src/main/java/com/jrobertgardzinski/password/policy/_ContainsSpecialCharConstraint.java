@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
 
+    public static final String CODE = "SPECIAL_CHAR_REQUIRED";
     private final Pattern pattern;
 
     public _ContainsSpecialCharConstraint() {
@@ -25,6 +26,6 @@ class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> 
 
     @Override
     public String code() {
-        return "SPECIAL_CHAR_REQUIRED";
+        return CODE;
     }
 }

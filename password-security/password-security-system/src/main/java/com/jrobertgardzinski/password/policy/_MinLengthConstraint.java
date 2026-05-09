@@ -6,10 +6,15 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
 
+    static final String CODE = "MIN_LENGTH_NOT_MET";
     private final MinLength minLength;
 
     public _MinLengthConstraint(MinLength minLength) {
         this.minLength = minLength;
+    }
+
+    public _MinLengthConstraint() {
+        this(MinLength.DEFAULT);
     }
 
     @Override
@@ -19,6 +24,6 @@ class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
 
     @Override
     public String code() {
-        return "MIN_LENGTH_NOT_MET";
+        return CODE;
     }
 }

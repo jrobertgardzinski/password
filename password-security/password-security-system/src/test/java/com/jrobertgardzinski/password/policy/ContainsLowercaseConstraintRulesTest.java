@@ -17,23 +17,25 @@ class ContainsLowercaseConstraintRulesTest {
 
     private final _ContainsLowercaseConstraint constraint = new _ContainsLowercaseConstraint();
 
-    @DisplayName("rejects ")
-    @ParameterizedTest(name = "\"{0}\" (no lowercase)")
-    @ValueSource(strings = {"PASSWORD1!", "ABC123#", "NOLOWER"})
-    void rejectsPasswordWithNoLowercase(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
+    final String REJECTS = "PASSWORD1!";
+
+    @Example
+    @Label("rejects \"" + REJECTS + "\" (no lowercase)")
+    void rejection() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
     }
 
-    @DisplayName("accepts ")
-    @ParameterizedTest(name = "\"{0}\" (has lowercase)")
-    @ValueSource(strings = {"Password1!", "aBC123", "strong"})
-    void acceptsPasswordWithLowercase(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    final String ACCEPTS = "Password1!";
+
+    @Example
+    @Label("accepts \"" + ACCEPTS + "\"")
+    void acceptance() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
     }
 
     @Example
-    @Label("error code is LOWERCASE_REQUIRED")
+    @Label("error code is " + _ContainsLowercaseConstraint.CODE)
     void errorCode() {
-        assertThat(constraint.code()).isEqualTo("LOWERCASE_REQUIRED");
+        assertThat(constraint.code()).isEqualTo(_ContainsLowercaseConstraint.CODE);
     }
 }

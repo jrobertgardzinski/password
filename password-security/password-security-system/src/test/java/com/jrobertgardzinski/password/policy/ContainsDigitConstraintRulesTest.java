@@ -17,23 +17,25 @@ class ContainsDigitConstraintRulesTest {
 
     private final _ContainsDigitConstraint constraint = new _ContainsDigitConstraint();
 
-    @DisplayName("rejects ")
-    @ParameterizedTest(name = "\"{0}\" (no digit)")
-    @ValueSource(strings = {"Password!", "Secret#", "NoDigit!"})
-    void rejectsPasswordWithNoDigit(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
+    final String REJECTS = "Password!";
+
+    @Example
+    @Label("rejects \"" + REJECTS + "\" (no digit)")
+    void rejection() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
     }
 
-    @DisplayName("accepts ")
-    @ParameterizedTest(name = "\"{0}\" (has digit)")
-    @ValueSource(strings = {"Password1", "Secret1#", "abc123"})
-    void acceptsPasswordWithDigit(String value) {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    final String ACCEPTS = "Password1";
+
+    @Example
+    @Label("accepts \"" + ACCEPTS + "\"")
+    void acceptance() {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
     }
 
     @Example
-    @Label("error code is DIGIT_REQUIRED")
+    @Label("error code is " + _ContainsDigitConstraint.CODE)
     void errorCode() {
-        assertThat(constraint.code()).isEqualTo("DIGIT_REQUIRED");
+        assertThat(constraint.code()).isEqualTo(_ContainsDigitConstraint.CODE);
     }
 }

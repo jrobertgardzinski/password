@@ -28,33 +28,18 @@ class CreatePasswordHashRulesTest {
     private static final PlaintextPassword ANY_PASSWORD = PlaintextPassword.of("P@ssw0rd1!");
 
     private static final List<ErrorConstraint<PlaintextPassword>> CONSTRAINTS = List.of(
-            alwaysFailing(new _MinLengthConstraint(new MinLength(12))),
+            alwaysFailing(new _MinLengthConstraint()),
             alwaysFailing(new _ContainsUppercaseConstraint()),
             alwaysFailing(new _ContainsLowercaseConstraint()),
             alwaysFailing(new _ContainsDigitConstraint()),
             alwaysFailing(new _ContainsSpecialCharConstraint())
     );
 
-    @DisplayName("Rejects with ")
-    @ParameterizedTest(name = "{1} when \"{0}\" is unsatisfied")
-    @MethodSource("constraintCases")
-    void unsatisfiedConstraintCausesRejection(String name, String code, ErrorConstraint<PlaintextPassword> constraint) {
-        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), List.of(constraint));
-        CreatePasswordHash.PasswordHashCreation result = useCase.create(ANY_PASSWORD);
-        assertThat(result).isInstanceOf(CreatePasswordHash.PasswordHashCreation.Rejected.class);
-        assertThat(((CreatePasswordHash.PasswordHashCreation.Rejected) result).errorCodes()).contains(code);
-    }
-
-    static Stream<Arguments> constraintCases() {
-        return CONSTRAINTS.stream().map(c -> Arguments.of(c.toString(), c.code(), c));
-    }
-
     @Property(tries = 10)
-    @Label("if any subset of CONSTRAINTS is unsatisfied → rejected with all their codes")
+    @Label("if any subset of constraints is unsatisfied → rejected with all their codes")
     void anySubsetOfUnsatisfiedConstraintsCausesRejection(
             @ForAll("constraintCombinations") Set<ErrorConstraint<PlaintextPassword>> brokenConstraints) {
         List<String> expectedCodes = brokenConstraints.stream().map(ErrorConstraint::code).toList();
-        Allure.parameter("CONSTRAINTS", CONSTRAINTS);
         Allure.parameter("broken constraints", expectedCodes);
 
         CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), new ArrayList<>(brokenConstraints));

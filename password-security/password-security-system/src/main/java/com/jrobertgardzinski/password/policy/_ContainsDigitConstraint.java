@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 class _ContainsDigitConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private static final Pattern DIGIT = Pattern.compile("\\d");
+    static final String CODE = "DIGIT_REQUIRED";
 
     @Override
     public boolean isSatisfied(PlaintextPassword candidate) {
