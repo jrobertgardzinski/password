@@ -3,17 +3,19 @@ package com.jrobertgardzinski.password.security.config;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Epic("Password")
-@Feature("Password Security Configuration - MinLength")
+@Feature("Password Security Configuration")
+@Story("MinLength")
 class MinLengthRulesTest {
 
     @Property
-    @Label("Invariant: accepts valid values")
+    @Label("accepts")
     void acceptsValidValues(@ForAll("validValues") Tuple.Tuple2<String, Integer> boundary) {
         Allure.parameter(boundary.get1(), boundary.get2());
         int value = boundary.get2();
@@ -21,7 +23,7 @@ class MinLengthRulesTest {
     }
 
     @Property
-    @Label("Invariant: rejects invalid values")
+    @Label("rejects")
     void rejectsInvalidValues(@ForAll("invalidValues") Tuple.Tuple2<String, Integer> boundary) {
         Allure.parameter(boundary.get1(), boundary.get2());
         int value = boundary.get2();

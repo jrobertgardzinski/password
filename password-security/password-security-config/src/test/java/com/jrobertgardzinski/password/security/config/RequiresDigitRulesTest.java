@@ -1,14 +1,16 @@
 package com.jrobertgardzinski.password.security.config;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import net.jqwik.api.*;
+import io.qameta.allure.Story;
+import net.jqwik.api.Example;
+import net.jqwik.api.Label;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Epic("Password")
-@Feature("Password Security Configuration - RequiresDigit")
+@Feature("Password Security Configuration")
+@Story("RequiresDigit")
 class RequiresDigitRulesTest {
     @Example
     @Label("default is true")

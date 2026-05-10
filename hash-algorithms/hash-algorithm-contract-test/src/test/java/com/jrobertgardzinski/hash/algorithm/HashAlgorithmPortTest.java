@@ -6,13 +6,15 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.Example;
 import net.jqwik.api.Label;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@Epic("Contract - password verification")
-@Feature("Hash algorithm")
+@Epic("Hash Algorithm: Argon2")
+@Feature("Contract")
+@Story("password verification")
 public abstract class HashAlgorithmPortTest {
 
     private static final String INPUT = "StrongPassword1!";

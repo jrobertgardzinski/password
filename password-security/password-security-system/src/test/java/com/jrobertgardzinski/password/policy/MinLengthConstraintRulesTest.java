@@ -4,16 +4,15 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.security.config.MinLength;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.Example;
 import net.jqwik.api.Label;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Constraints")
-@Feature("Minimum length (" + MinLengthConstraintRulesTest.MIN_LENGTH + " characters long)")
+@Epic("Password")
+@Feature("Constraints")
+@Story("Minimum length (for instance: " + MinLengthConstraintRulesTest.MIN_LENGTH + " characters long)")
 class MinLengthConstraintRulesTest {
 
     static final int MIN_LENGTH = 8;

@@ -4,11 +4,14 @@ import com.jrobertgardzinski.password.security.config.*;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Password policy")
+@Epic("Password")
+@Feature("Password policy")
+@Story("Config")
 class PasswordPolicyRulesTest {
 
     @Example
