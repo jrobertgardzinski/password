@@ -3,12 +3,13 @@ package com.jrobertgardzinski.hash.algorithm.argon2;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Hash Algorithms")
-@Feature("Argon2 Configuration")
+@Epic("Hash Algorithm: Argon2")
+@Feature("Configuration")
 class Argon2ConfigRulesTest {
 
     @Example

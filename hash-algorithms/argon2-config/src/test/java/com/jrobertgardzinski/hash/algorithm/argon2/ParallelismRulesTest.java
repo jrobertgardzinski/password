@@ -3,13 +3,15 @@ package com.jrobertgardzinski.hash.algorithm.argon2;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Epic("Hash Algorithms")
-@Feature("Argon2 Configuration - Parallelism")
+@Epic("Hash Algorithm: Argon2")
+@Feature("Configuration")
+@Story("Parallelism")
 class ParallelismRulesTest {
 
     @Property

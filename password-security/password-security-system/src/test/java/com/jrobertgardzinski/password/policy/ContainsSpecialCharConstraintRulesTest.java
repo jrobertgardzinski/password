@@ -4,6 +4,7 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.security.config.SpecialChars;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.Example;
 import net.jqwik.api.Label;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +14,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.jrobertgardzinski.password.policy.ContainsSpecialCharConstraintRulesTest.CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Constraints")
-@Feature("Special char (\"" + CONFIG + "\")")
+@Epic("Password")
+@Feature("Constraints")
+@Story("Special char (for instance: \"" + CONFIG + "\")")
 class ContainsSpecialCharConstraintRulesTest {
 
     public static final String CONFIG = "!";

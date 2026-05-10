@@ -3,6 +3,7 @@ package com.jrobertgardzinski.password.policy;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.Example;
 import net.jqwik.api.Label;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Constraints")
-@Feature("Uppercase")
+@Epic("Password")
+@Feature("Constraints")
+@Story("Uppercase")
 class ContainsUppercaseConstraintRulesTest {
 
     private final _ContainsUppercaseConstraint constraint = new _ContainsUppercaseConstraint();

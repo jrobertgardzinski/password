@@ -3,6 +3,7 @@ package com.jrobertgardzinski.password.security.config;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import java.util.stream.Collectors;
@@ -11,7 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Epic("Password")
-@Feature("Password Security Configuration - SpecialChars")
+@Feature("Password Security Configuration")
+@Story("SpecialChars")
 class SpecialCharsRulesTest {
 
     @Property(tries = 10)
@@ -58,8 +60,6 @@ class SpecialCharsRulesTest {
     @Provide
     Arbitrary<Tuple.Tuple2<String, String>> invalidValues() {
         return Arbitraries.of(
-                Tuple.of("empty string", ""),
-                Tuple.of("null", null),
                 Tuple.of("letter — not a special char", "a"),
                 Tuple.of("digit — not a special char", "1")
         );

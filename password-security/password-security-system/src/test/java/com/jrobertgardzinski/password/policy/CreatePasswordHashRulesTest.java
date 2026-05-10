@@ -8,6 +8,7 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import net.jqwik.api.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,8 +22,9 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Epic("Use case")
-@Feature("Create Password Hash")
+@Epic("Password")
+@Feature("Use case")
+@Story("Create Password Hash")
 class CreatePasswordHashRulesTest {
 
     private static final PlaintextPassword ANY_PASSWORD = PlaintextPassword.of("P@ssw0rd1!");
