@@ -3,7 +3,8 @@ package com.jrobertgardzinski.password.policy;
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
-import com.jrobertgardzinski.util.constraint.Constraint;
+import com.jrobertgardzinski.util.constraint.Constraints;
+import com.jrobertgardzinski.util.constraint.Decision;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public class CreatePasswordHash {
 
     private final HashAlgorithmPort hashAlgorithm;
-    private final List<ErrorConstraint<PlaintextPassword>> constraints;
+    private final Constraints<PlaintextPassword> constraints;
 
     public CreatePasswordHash(HashAlgorithmPort hashAlgorithm, PasswordPolicy policy) {
         this(hashAlgorithm, policy.constraints());
@@ -19,18 +20,15 @@ public class CreatePasswordHash {
 
     CreatePasswordHash(HashAlgorithmPort hashAlgorithm, List<ErrorConstraint<PlaintextPassword>> constraints) {
         this.hashAlgorithm = hashAlgorithm;
-        this.constraints = constraints;
+        this.constraints = new Constraints<>(constraints);
     }
 
     public PasswordHashCreation create(PlaintextPassword password) {
-        List<String> codes = constraints.stream()
-                .filter(c -> !c.isSatisfied(password))
-                .map(Constraint::code)
-                .toList();
-        if (!codes.isEmpty()) {
-            return new PasswordHashCreation.Rejected(codes);
-        }
-        return new PasswordHashCreation.Created(hashAlgorithm.hash(password));
+        return switch (constraints.decide(password)) {
+            case Decision.Rejected r -> new PasswordHashCreation.Rejected(r.errorCodes());
+            case Decision.Allowed ignored -> new PasswordHashCreation.Created(hashAlgorithm.hash(password));
+            case Decision.AllowedWithWarning ignored -> new PasswordHashCreation.Created(hashAlgorithm.hash(password));
+        };
     }
 
     public sealed interface PasswordHashCreation {
