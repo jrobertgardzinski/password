@@ -5,6 +5,7 @@ import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.security.config.MinLength;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
+import com.jrobertgardzinski.util.constraint.Outcome;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -45,16 +46,16 @@ class CreatePasswordHashRulesTest {
         Allure.parameter("broken constraints", expectedCodes);
 
         CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), new ArrayList<>(brokenConstraints));
-        CreatePasswordHash.PasswordHashCreation result = useCase.create(ANY_PASSWORD);
-        assertThat(result).isInstanceOf(CreatePasswordHash.PasswordHashCreation.Rejected.class);
-        assertThat(((CreatePasswordHash.PasswordHashCreation.Rejected) result).errorCodes()).containsAll(expectedCodes);
+        Outcome<HashedPassword> result = useCase.create(ANY_PASSWORD);
+        assertThat(result).isInstanceOf(Outcome.Rejected.class);
+        assertThat(((Outcome.Rejected<HashedPassword>) result).errorCodes()).containsAll(expectedCodes);
     }
 
     @Example
-    @Label("all constraints satisfied → created")
-    void allConstraintsSatisfiedCreates() {
+    @Label("all constraints satisfied → allowed")
+    void allConstraintsSatisfiedAllows() {
         CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), List.of(passing()));
-        assertThat(useCase.create(ANY_PASSWORD)).isInstanceOf(CreatePasswordHash.PasswordHashCreation.Created.class);
+        assertThat(useCase.create(ANY_PASSWORD)).isInstanceOf(Outcome.Allowed.class);
     }
 
     @Provide
