@@ -4,8 +4,8 @@ import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.util.constraint.Constraints;
-import com.jrobertgardzinski.util.constraint.Decision;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
+import com.jrobertgardzinski.util.constraint.Outcome;
 
 import java.util.List;
 
@@ -23,16 +23,7 @@ public class CreatePasswordHash {
         this.constraints = new Constraints<>(constraints);
     }
 
-    public PasswordHashCreation create(PlaintextPassword password) {
-        return switch (constraints.decide(password)) {
-            case Decision.Rejected r -> new PasswordHashCreation.Rejected(r.errorCodes());
-            case Decision.Allowed ignored -> new PasswordHashCreation.Created(hashAlgorithm.hash(password));
-            case Decision.AllowedWithWarning ignored -> new PasswordHashCreation.Created(hashAlgorithm.hash(password));
-        };
-    }
-
-    public sealed interface PasswordHashCreation {
-        record Created(HashedPassword hashedPassword) implements PasswordHashCreation {}
-        record Rejected(List<String> errorCodes) implements PasswordHashCreation {}
+    public Outcome<HashedPassword> create(PlaintextPassword password) {
+        return Outcome.from(constraints.decide(password), () -> hashAlgorithm.hash(password));
     }
 }
