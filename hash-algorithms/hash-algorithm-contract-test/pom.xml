@@ -33,6 +33,7 @@
         <dependency>
             <groupId>com.jrobertgardzinski</groupId>
             <artifactId>password-domain</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
