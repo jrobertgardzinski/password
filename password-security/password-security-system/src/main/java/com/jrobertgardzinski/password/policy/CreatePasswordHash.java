@@ -25,6 +25,7 @@ public class CreatePasswordHash {
     }
 
     public Outcome<HashedPassword> create(Supplier<PlaintextPassword> password) {
-        return Outcome.from(constraints.decide(password), () -> hashAlgorithm.hash(password.get()));
+        Outcome<PlaintextPassword> result = constraints.validate(password);
+        return result.map(hashAlgorithm::hash);
     }
 }
