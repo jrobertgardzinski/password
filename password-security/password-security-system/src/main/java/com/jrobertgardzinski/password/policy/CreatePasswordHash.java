@@ -8,6 +8,7 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 import com.jrobertgardzinski.util.constraint.Outcome;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class CreatePasswordHash {
 
@@ -23,7 +24,7 @@ public class CreatePasswordHash {
         this.constraints = new Constraints<>(constraints);
     }
 
-    public Outcome<HashedPassword> create(PlaintextPassword password) {
-        return Outcome.from(constraints.decide(password), () -> hashAlgorithm.hash(password));
+    public Outcome<HashedPassword> create(Supplier<PlaintextPassword> password) {
+        return Outcome.from(constraints.decide(password), () -> hashAlgorithm.hash(password.get()));
     }
 }

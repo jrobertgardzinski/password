@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Story("Create Password Hash")
 class CreatePasswordHashRulesTest {
 
-    private static final PlaintextPassword ANY_PASSWORD = PlaintextPassword.of("P@ssw0rd1!");
+    private static final Supplier<PlaintextPassword> ANY_PASSWORD = () -> PlaintextPassword.of("P@ssw0rd1!");
 
     private static final List<ErrorConstraint<PlaintextPassword>> CONSTRAINTS = List.of(
             alwaysFailing(new _MinLengthConstraint()),
