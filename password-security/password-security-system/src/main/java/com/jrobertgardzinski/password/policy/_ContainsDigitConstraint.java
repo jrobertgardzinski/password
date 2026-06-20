@@ -17,6 +17,6 @@ class _ContainsDigitConstraint extends ErrorConstraint<PlaintextPassword> {
 
     @Override
     public String code() {
-        return "DIGIT_REQUIRED";
+        return CODE;
     }
 }
