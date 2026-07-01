@@ -5,8 +5,13 @@ import com.jrobertgardzinski.password.security.config.MinLength;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import net.jqwik.api.Arbitraries;
+import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Example;
+import net.jqwik.api.ForAll;
 import net.jqwik.api.Label;
+import net.jqwik.api.Property;
+import net.jqwik.api.Provide;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,20 +23,26 @@ class MinLengthConstraintRulesTest {
     static final int MIN_LENGTH = 8;
     private final _MinLengthConstraint constraint = new _MinLengthConstraint(new MinLength(MIN_LENGTH));
 
-    final String REJECTS = "Sh0rt!";
-
-    @Example
-    @Label("rejects \"" + REJECTS + "\" (at least " + MIN_LENGTH + " chars)")
-    void rejection() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
+    @Property
+    @Label("rejects passwords shorter than the minimum")
+    void rejects(@ForAll("rejected") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
     }
 
-    final String ACCEPTS = "LongPass";
+    @Provide
+    Arbitrary<String> rejected() {
+        return Arbitraries.of("Sh0rt!", "Pa1!", "Abc1!");
+    }
 
-    @Example
-    @Label("accepts \"" + ACCEPTS + "\"")
-    void acceptance() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
+    @Property
+    @Label("accepts passwords of at least the minimum length")
+    void accepts(@ForAll("accepted") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    }
+
+    @Provide
+    Arbitrary<String> accepted() {
+        return Arbitraries.of("LongPass", "Password1", "Secure12#");
     }
 
     @Example

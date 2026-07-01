@@ -4,11 +4,13 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import net.jqwik.api.Arbitraries;
+import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Example;
+import net.jqwik.api.ForAll;
 import net.jqwik.api.Label;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import net.jqwik.api.Property;
+import net.jqwik.api.Provide;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,20 +21,26 @@ class ContainsDigitConstraintRulesTest {
 
     private final _ContainsDigitConstraint constraint = new _ContainsDigitConstraint();
 
-    final String REJECTS = "Password!";
-
-    @Example
-    @Label("rejects \"" + REJECTS + "\" (no digit)")
-    void rejection() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
+    @Property
+    @Label("rejects passwords with no digit")
+    void rejects(@ForAll("rejected") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
     }
 
-    final String ACCEPTS = "Password1";
+    @Provide
+    Arbitrary<String> rejected() {
+        return Arbitraries.of("Password!", "abcABC", "NoDigits");
+    }
 
-    @Example
-    @Label("accepts \"" + ACCEPTS + "\"")
-    void acceptance() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
+    @Property
+    @Label("accepts passwords with a digit")
+    void accepts(@ForAll("accepted") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    }
+
+    @Provide
+    Arbitrary<String> accepted() {
+        return Arbitraries.of("Password1", "abc9def", "7even");
     }
 
     @Example

@@ -5,11 +5,13 @@ import com.jrobertgardzinski.password.security.config.SpecialChars;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import net.jqwik.api.Arbitraries;
+import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Example;
+import net.jqwik.api.ForAll;
 import net.jqwik.api.Label;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import net.jqwik.api.Property;
+import net.jqwik.api.Provide;
 
 import static com.jrobertgardzinski.password.policy.ContainsSpecialCharConstraintRulesTest.CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,20 +24,26 @@ class ContainsSpecialCharConstraintRulesTest {
     public static final String CONFIG = "!";
     private final _ContainsSpecialCharConstraint constraint = new _ContainsSpecialCharConstraint(new SpecialChars(CONFIG));
 
-    final String REJECTS = "Password1";
-
-    @Example
-    @Label("rejects \"" + REJECTS + "\" (no special char)")
-    void rejection() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(REJECTS))).isFalse();
+    @Property
+    @Label("rejects passwords with no special character")
+    void rejects(@ForAll("rejected") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isFalse();
     }
 
-    final String ACCEPTS = "Password1!";
+    @Provide
+    Arbitrary<String> rejected() {
+        return Arbitraries.of("Password1", "abcABC123", "NoSpecial9");
+    }
 
-    @Example
-    @Label("accepts \"" + ACCEPTS + "\"")
-    void acceptance() {
-        assertThat(constraint.isSatisfied(PlaintextPassword.of(ACCEPTS))).isTrue();
+    @Property
+    @Label("accepts passwords with a special character")
+    void accepts(@ForAll("accepted") String value) {
+        assertThat(constraint.isSatisfied(PlaintextPassword.of(value))).isTrue();
+    }
+
+    @Provide
+    Arbitrary<String> accepted() {
+        return Arbitraries.of("Password1!", "abc!9", "x!Y7");
     }
 
     @Example
