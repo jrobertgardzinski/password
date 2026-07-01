@@ -11,10 +11,12 @@
 
 - [ ] Test `loadsFromProperties` w `Argon2ConfigRulesTest` do przepisania
   - powinien weryfikować że `Argon2Config` implementuje `PropertiesConfigSource`, nie testować konkretnych wartości
+  - UWAGA: test `loadsFromProperties` już nie istnieje (jest `builderWithoutValuesProducesDefaults`);
+    ten punkt jest sprzężony z designem `PropertiesConfigSource` wyżej — zrobić razem z nim
 
 ## Testy VO
 
-- [ ] Refaktoryzacja `IterationsRulesTest`, `MemLimitInKBRulesTest`, `ParallelismRulesTest`
-  do abstrakcyjnej klasy bazowej `BoundedIntRulesTest`
-  - subklasy implementują `min()`, `max()`, `create(int)`
+- [x] Refaktoryzacja `IterationsRulesTest`, `MemLimitInKBRulesTest`, `ParallelismRulesTest`
+  do abstrakcyjnej klasy bazowej `BoundedIntRulesTest` — ZROBIONE
+  - subklasy implementują `min()`, `max()` (OptionalInt — Iterations bez górnej granicy), `create(int)`
   - eliminuje powielony kod testów `acceptsValidValues` / `rejectsInvalidValues`
