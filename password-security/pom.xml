@@ -11,7 +11,7 @@
 
     <modules>
         <module>password-security-config</module>
-        <module>password-security-system</module>
+        <module>password-security-usecase</module>
     </modules>
 
     <dependencyManagement>

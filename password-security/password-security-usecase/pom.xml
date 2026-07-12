@@ -8,7 +8,7 @@
         <artifactId>password-security</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>password-security-system</artifactId>
+    <artifactId>password-security-usecase</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
