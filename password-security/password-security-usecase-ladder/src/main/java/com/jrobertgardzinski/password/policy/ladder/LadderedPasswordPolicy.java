@@ -1,9 +1,8 @@
-package com.jrobertgardzinski.password.settings;
+package com.jrobertgardzinski.password.policy.ladder;
 
 import com.jrobertgardzinski.config.ladder.ConfigLadder;
 import com.jrobertgardzinski.password.policy.PasswordPolicy;
 import com.jrobertgardzinski.password.security.config.MinLength;
-import com.jrobertgardzinski.password.security.config.MinLengthLadder;
 import com.jrobertgardzinski.password.security.config.RequiresDigit;
 import com.jrobertgardzinski.password.security.config.RequiresLowercase;
 import com.jrobertgardzinski.password.security.config.RequiresUppercase;

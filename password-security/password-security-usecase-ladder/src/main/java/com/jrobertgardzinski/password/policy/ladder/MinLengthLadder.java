@@ -1,10 +1,11 @@
-package com.jrobertgardzinski.password.security.config;
+package com.jrobertgardzinski.password.policy.ladder;
 
 import com.jrobertgardzinski.config.ladder.ConfigLadder;
 import com.jrobertgardzinski.config.source.live.LiveConfigPort;
 import com.jrobertgardzinski.config.source.live.LiveConfigSource;
 import com.jrobertgardzinski.config.source.restart.RestartConfigPort;
 import com.jrobertgardzinski.config.source.restart.RestartConfigSource;
+import com.jrobertgardzinski.password.security.config.MinLength;
 
 /**
  * How a {@link MinLength} is resolved at runtime: the ladder definition that belongs next to the

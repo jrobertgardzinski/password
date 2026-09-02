@@ -8,21 +8,24 @@
         <artifactId>password-security</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>password-security-usecase</artifactId>
+    <artifactId>password-security-usecase-ladder</artifactId>
     <packaging>jar</packaging>
 
+    <!-- The password policy at runtime: the one module that knows the configuration ladder.
+         password-security-config (the values) and password-security-usecase (the policy) stay free
+         of it, so a consumer that only judges passwords never pulls the ladder in. -->
     <dependencies>
         <dependency>
             <groupId>com.jrobertgardzinski</groupId>
-            <artifactId>constraint</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jrobertgardzinski</groupId>
-            <artifactId>password-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jrobertgardzinski</groupId>
             <artifactId>password-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jrobertgardzinski</groupId>
+            <artifactId>password-security-usecase</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jrobertgardzinski</groupId>
+            <artifactId>config</artifactId>
         </dependency>
     </dependencies>
 </project>

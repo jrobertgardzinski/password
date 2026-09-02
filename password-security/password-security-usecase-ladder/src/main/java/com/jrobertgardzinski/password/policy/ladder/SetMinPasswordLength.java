@@ -1,7 +1,6 @@
-package com.jrobertgardzinski.password.settings;
+package com.jrobertgardzinski.password.policy.ladder;
 
 import com.jrobertgardzinski.password.security.config.MinLength;
-import com.jrobertgardzinski.password.security.config.MinLengthLadder;
 
 /**
  * An ADMIN sets the minimum password length while the system runs. The value object is the gate:

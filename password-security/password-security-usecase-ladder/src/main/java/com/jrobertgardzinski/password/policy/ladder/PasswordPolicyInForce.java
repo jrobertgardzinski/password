@@ -1,4 +1,4 @@
-package com.jrobertgardzinski.password.settings;
+package com.jrobertgardzinski.password.policy.ladder;
 
 import com.jrobertgardzinski.password.policy.PasswordPolicy;
 
