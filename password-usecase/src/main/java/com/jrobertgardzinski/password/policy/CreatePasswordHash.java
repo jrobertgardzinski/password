@@ -10,6 +10,9 @@ import com.jrobertgardzinski.util.constraint.Outcome;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Judges a plaintext password against a policy and, if it passes, hashes it.
+ */
 public class CreatePasswordHash {
 
     private final HashAlgorithmPort hashAlgorithm;

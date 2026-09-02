@@ -7,6 +7,9 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The rules a password must satisfy, held together as one value.
+ */
 public record PasswordPolicy(
         MinLength minLength,
         SpecialChars specialChars,

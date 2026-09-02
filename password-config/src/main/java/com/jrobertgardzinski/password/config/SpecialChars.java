@@ -1,5 +1,8 @@
 package com.jrobertgardzinski.password.config;
 
+/**
+ * The special characters a password may use: a non-empty subset of {@link #ALLOWED}, without repeats.
+ */
 public record SpecialChars(String value) {
 
     public static final String ALLOWED = "!\"#$%&'()*+,-./:;<=>?@[\\]^_{|}~";

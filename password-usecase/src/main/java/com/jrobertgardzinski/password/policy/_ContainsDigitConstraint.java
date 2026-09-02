@@ -5,6 +5,9 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
+/**
+ * Fails a password without a digit.
+ */
 class _ContainsDigitConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private static final Pattern DIGIT = Pattern.compile("\\d");

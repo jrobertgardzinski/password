@@ -4,6 +4,9 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.config.MinLength;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
+/**
+ * Fails a password shorter than the policy's minimum length.
+ */
 class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
 
     static final String CODE = "MIN_LENGTH_NOT_MET";

@@ -6,6 +6,9 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
+/**
+ * Fails a password without any of the policy's special characters.
+ */
 class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> {
 
     public static final String CODE = "SPECIAL_CHAR_REQUIRED";

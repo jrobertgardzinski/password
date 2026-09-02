@@ -1,5 +1,8 @@
 package com.jrobertgardzinski.password.config;
 
+/**
+ * The fewest characters a password may have; never below {@value #BOUNDARY}.
+ */
 public record MinLength(int value) {
 
     public static final int BOUNDARY = 5;

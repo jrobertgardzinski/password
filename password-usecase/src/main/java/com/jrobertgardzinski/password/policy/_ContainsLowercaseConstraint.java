@@ -5,6 +5,9 @@ import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 
 import java.util.regex.Pattern;
 
+/**
+ * Fails a password without a lowercase letter.
+ */
 class _ContainsLowercaseConstraint extends ErrorConstraint<PlaintextPassword> {
 
     private static final Pattern LOWERCASE = Pattern.compile("[a-z]");
