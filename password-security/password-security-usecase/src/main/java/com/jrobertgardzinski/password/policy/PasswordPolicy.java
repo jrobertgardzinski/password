@@ -25,8 +25,14 @@ public record PasswordPolicy(
         );
     }
 
-    public PasswordPolicy(MinLength minLength, SpecialChars specialChars) {
-        this(minLength, specialChars, RequiresUppercase.DEFAULT, RequiresLowercase.DEFAULT, RequiresDigit.DEFAULT);
+    /**
+     * {@link #withDefaults() The default policy} with these two rules replaced. The other three —
+     * uppercase, lowercase, digit — keep their {@code DEFAULT}; the name says so, where a
+     * two-argument constructor used to hide it.
+     */
+    public static PasswordPolicy defaultsExcept(MinLength minLength, SpecialChars specialChars) {
+        return new PasswordPolicy(minLength, specialChars,
+                RequiresUppercase.DEFAULT, RequiresLowercase.DEFAULT, RequiresDigit.DEFAULT);
     }
 
     List<ErrorConstraint<PlaintextPassword>> constraints() {
