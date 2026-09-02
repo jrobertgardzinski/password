@@ -10,4 +10,11 @@
     </parent>
     <artifactId>password-security-config</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.jrobertgardzinski</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
