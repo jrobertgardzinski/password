@@ -4,7 +4,7 @@ import com.jrobertgardzinski.password.policy.PasswordPolicy;
 
 /**
  * The read side of the password settings: what the policy IS right now, for the attempt about to
- * be judged. The mirror of {@link MinPasswordLengthStore}, which is the write side — and
+ * be judged. The mirror of {@link MinLengthRepository}, which is the write side — and
  * deliberately a separate port, because the two answer different questions: the store lays a value
  * on one rung, while this reports the winner of the whole ladder. Write 3 through the store and
  * this may still answer 5, because the ladder refused the row and fell through; on one interface

@@ -23,9 +23,9 @@ public class SetMinPasswordLength {
         }
     }
 
-    private final MinPasswordLengthStore store;
+    private final MinLengthRepository store;
 
-    public SetMinPasswordLength(MinPasswordLengthStore store) {
+    public SetMinPasswordLength(MinLengthRepository store) {
         this.store = store;
     }
 
