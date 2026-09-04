@@ -23,11 +23,6 @@ Tylko otwarte rzeczy. Historia zrobionego = git log.
 
 ## Otwarte — dowody (2026-09-02)
 
-- `password-ladder` ma ZERO testów; zachowanie sprawdzone tylko przez HTTP w microservice-security
-  (password-policy.feature). Do dopisania w konwencji biblioteki (jqwik + etykiety Allure):
-  `SetMinPasswordLengthRulesTest` (≥5 przyjęte i zapisane, <5 odrzucone z powodem i bez zapisu),
-  `LadderedPasswordPolicyRulesTest` (długość z drabinki, 4 pozostałe DEFAULT; wiersz 3 spada do
-  domyślnej), `MinLengthLadderRulesTest` (klucz, bramka).
 - ADR 0008 w shared/docs/adr: moduł `*-ladder` jest osobny z JEDNEGO powodu — wnosi port
   persystencji (`MinLengthRepository`) i zależność od `config` (ladder), których rdzeń
   domain/config/usecase nie chce mieć. `*-ladder` zależy od rdzenia, nigdy odwrotnie; serwis
