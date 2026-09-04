@@ -28,7 +28,10 @@ Tylko otwarte rzeczy. Historia zrobionego = git log.
   `SetMinPasswordLengthRulesTest` (≥5 przyjęte i zapisane, <5 odrzucone z powodem i bez zapisu),
   `LadderedPasswordPolicyRulesTest` (długość z drabinki, 4 pozostałe DEFAULT; wiersz 3 spada do
   domyślnej), `MinLengthLadderRulesTest` (klucz, bramka).
-- ADR 0008 w shared/docs/adr: opcjonalne moduły `*-ladder` (rdzeń domain/config/usecase nie zna
-  drabinki; `*-ladder` zależy od rdzenia i `config`, nigdy odwrotnie; serwis wnosi tylko adaptery
-  portów, okablowanie i cache TTL; `*-ladder` niesie własny dowód). Kandydaci: `email-ladder`,
-  `argon2-ladder`.
+- ADR 0008 w shared/docs/adr: moduł `*-ladder` jest osobny z JEDNEGO powodu — wnosi port
+  persystencji (`MinLengthRepository`) i zależność od `config` (ladder), których rdzeń
+  domain/config/usecase nie chce mieć. `*-ladder` zależy od rdzenia, nigdy odwrotnie; serwis
+  wnosi tylko adaptery portów, okablowanie i cache TTL; `*-ladder` niesie własny dowód.
+  NIE jest to reguła „każda biblioteka dostaje ladder": drugi moduł ladder powstaje dopiero,
+  gdy jakaś reguła faktycznie ma być zmieniana na żywo. Kandydat: `email-ladder` (listy domen).
+  `argon2` NIE potrzebuje drabinki (parametry hashowania zmienia się przez rehash, nie na żywo).
