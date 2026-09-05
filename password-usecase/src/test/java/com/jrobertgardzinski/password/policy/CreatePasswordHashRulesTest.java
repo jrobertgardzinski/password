@@ -4,6 +4,7 @@ import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.config.MinLength;
+import com.jrobertgardzinski.password.config.SpecialChars;
 import com.jrobertgardzinski.util.constraint.ErrorConstraint;
 import com.jrobertgardzinski.util.constraint.Outcome;
 import io.qameta.allure.Allure;
@@ -32,11 +33,11 @@ class CreatePasswordHashRulesTest {
     private static final Supplier<PlaintextPassword> ANY_PASSWORD = () -> PlaintextPassword.of("P@ssw0rd1!");
 
     private static final List<ErrorConstraint<PlaintextPassword>> CONSTRAINTS = List.of(
-            alwaysFailing(new _MinLengthConstraint()),
+            alwaysFailing(new _MinLengthConstraint(MinLength.DEFAULT)),
             alwaysFailing(new _ContainsUppercaseConstraint()),
             alwaysFailing(new _ContainsLowercaseConstraint()),
             alwaysFailing(new _ContainsDigitConstraint()),
-            alwaysFailing(new _ContainsSpecialCharConstraint())
+            alwaysFailing(new _ContainsSpecialCharConstraint(SpecialChars.DEFAULT))
     );
 
     @Property(tries = 10)

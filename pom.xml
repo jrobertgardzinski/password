@@ -16,7 +16,6 @@
         <module>password-domain</module>
         <module>password-config</module>
         <module>password-usecase</module>
-        <module>password-ladder</module>
         <module>hash-algorithms</module>
     </modules>
 
@@ -25,11 +24,6 @@
             <dependency>
                 <groupId>com.jrobertgardzinski</groupId>
                 <artifactId>constraint</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jrobertgardzinski</groupId>
-                <artifactId>config</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>

@@ -14,8 +14,8 @@ Tylko otwarte rzeczy. Historia zrobionego = git log.
   - Klienci: konta zakładane przez admina, hasła tymczasowe, glue testowe („a valid password"
     względem polityki — patrz microservice-security/specs/README.md o próbkach stopnia Rebuild).
   - Losowość: `SecureRandom` w use-casie; port tylko jeśli testy potrzebują determinizmu.
-  - Drabinka (`password-ladder`) dla tego use-case'u: MOŻLIWA (np. żywe długości wariantów),
-    ale „nie ma musu" — najpierw sam use-case.
+  - Żywe długości wariantów: MOŻLIWE jako kolejne zamówienie w `security-custom`, ale „nie ma
+    musu" — najpierw sam use-case.
 - Kandydaci omówieni, NIE zaplanowani: VerifyAndUpgradeHash (rehash po zmianie parametrów
   argon2 — domyka wzorzec drabinki po stronie hashowania; dziś serwis woła `verify` wprost w
   3 miejscach), NotReused (port historii hashów), NotBreached (k-anonimowość), MaxAge (wymaga
@@ -23,10 +23,10 @@ Tylko otwarte rzeczy. Historia zrobionego = git log.
 
 ## Otwarte — dowody (2026-09-02)
 
-- ADR 0008 w shared/docs/adr: moduł `*-ladder` jest osobny z JEDNEGO powodu — wnosi port
-  persystencji (`MinLengthRepository`) i zależność od `config` (ladder), których rdzeń
-  domain/config/usecase nie chce mieć. `*-ladder` zależy od rdzenia, nigdy odwrotnie; serwis
-  wnosi tylko adaptery portów, okablowanie i cache TTL; `*-ladder` niesie własny dowód.
-  NIE jest to reguła „każda biblioteka dostaje ladder": drugi moduł ladder powstaje dopiero,
-  gdy jakaś reguła faktycznie ma być zmieniana na żywo. Kandydat: `email-ladder` (listy domen).
+- ADR 0008 w shared/docs/adr: wzorzec `*-ladder` WYCOFANY 2026-09-05. Biblioteka niesie tylko port
+  odczytu `PasswordPolicyInForce` (password-usecase); zmiana reguły na żywo to zamówienie konkretnego
+  produktu i mieszka w serwisie, w `security-custom/custom-min-password-length` (use-case zapisu,
+  jego port, adapter JDBC, kontroler admina, wybór szczebli drabinki). Kontrakt drabinki = `config`
+  (`ConfigLadder.of(key, gate, rungs...)`, każda drabinka kończy się domyślną Rebuild). Do spisania
+  jako ADR: dlaczego rdzeń biblioteki nie zna drabinki i dlaczego live-config to zwykły stan za use-casem.
   `argon2` NIE potrzebuje drabinki (parametry hashowania zmienia się przez rehash, nie na żywo).

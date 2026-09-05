@@ -14,10 +14,6 @@ class _ContainsSpecialCharConstraint extends ErrorConstraint<PlaintextPassword> 
     public static final String CODE = "SPECIAL_CHAR_REQUIRED";
     private final Pattern pattern;
 
-    public _ContainsSpecialCharConstraint() {
-        this(SpecialChars.DEFAULT);
-    }
-
     public _ContainsSpecialCharConstraint(SpecialChars specialChars) {
         this.pattern = Pattern.compile("[" + Pattern.quote(specialChars.value()) + "]");
     }

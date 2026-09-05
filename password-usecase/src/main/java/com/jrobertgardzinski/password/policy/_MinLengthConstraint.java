@@ -16,10 +16,6 @@ class _MinLengthConstraint extends ErrorConstraint<PlaintextPassword> {
         this.minLength = minLength;
     }
 
-    public _MinLengthConstraint() {
-        this(MinLength.DEFAULT);
-    }
-
     @Override
     public boolean isSatisfied(PlaintextPassword candidate) {
         return candidate.value().length() >= minLength.value();
