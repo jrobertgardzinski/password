@@ -23,10 +23,12 @@ Tylko otwarte rzeczy. Historia zrobionego = git log.
 
 ## Otwarte — dowody (2026-09-02)
 
-- ADR 0008 w shared/docs/adr: wzorzec `*-ladder` WYCOFANY 2026-09-05. Biblioteka niesie tylko port
-  odczytu `PasswordPolicyInForce` (password-usecase); zmiana reguły na żywo to zamówienie konkretnego
-  produktu i mieszka w serwisie, w `security-custom/custom-min-password-length` (use-case zapisu,
-  jego port, adapter JDBC, kontroler admina, wybór szczebli drabinki). Kontrakt drabinki = `config`
-  (`ConfigLadder.of(key, gate, rungs...)`, każda drabinka kończy się domyślną Rebuild). Do spisania
-  jako ADR: dlaczego rdzeń biblioteki nie zna drabinki i dlaczego live-config to zwykły stan za use-casem.
+- ADR 0008 w shared/docs/adr: wzorzec `*-ladder` WYCOFANY 2026-09-05, `password-application`
+  SKASOWANY 2026-09-06. Biblioteka nie zna `config`: rekordy w `password-config` niosą klucz (`KEY`)
+  i domyślną (`DEFAULT`), `password-usecase` tylko port odczytu `PasswordPolicyInForce`. Drabinki
+  (`ConfigLadder.of(KEY, MinLength::new, Rung.live(snapshot, Parse::integer), Rung.restart(props,
+  Parse::integer), Rung.rebuild(DEFAULT.value()))`) deklaruje serwis w swojej fabryce beanów; poziom
+  live to jeden snapshot tabeli `security_settings` co TTL (`SnapshotLiveConfigPort` w `config`),
+  więc KAŻDY klucz ma live/restart/rebuild i nie ma „zamówień" na live per klucz. Do spisania jako
+  ADR: dlaczego biblioteka nie zna drabinki i dlaczego live-config to zwykły stan za use-casem.
   `argon2` NIE potrzebuje drabinki (parametry hashowania zmienia się przez rehash, nie na żywo).

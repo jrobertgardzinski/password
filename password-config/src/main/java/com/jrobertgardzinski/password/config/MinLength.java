@@ -5,6 +5,9 @@ package com.jrobertgardzinski.password.config;
  */
 public record MinLength(int value) {
 
+    /** The name this rule goes by on every level of a deployment's configuration ladder. */
+    public static final String KEY = "security.password.policy.min.length";
+
     public static final int BOUNDARY = 5;
     public static final MinLength DEFAULT = new MinLength(BOUNDARY);
 

@@ -5,5 +5,8 @@ package com.jrobertgardzinski.password.config;
  */
 public record RequiresLowercase(boolean value) {
 
+    /** The name this rule goes by on every level of a deployment's configuration ladder. */
+    public static final String KEY = "security.password.policy.requires.lowercase";
+
     public static final RequiresLowercase DEFAULT = new RequiresLowercase(true);
 }
