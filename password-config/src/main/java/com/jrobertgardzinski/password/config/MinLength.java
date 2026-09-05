@@ -2,8 +2,6 @@ package com.jrobertgardzinski.password.config;
 
 import com.jrobertgardzinski.config.ConfigValue;
 
-import java.util.Objects;
-
 /**
  * The fewest characters a password may have; never below {@value #BOUNDARY}.
  */
@@ -16,7 +14,6 @@ public record MinLength(Integer value) implements ConfigValue<Integer> {
     public static final MinLength DEFAULT = new MinLength(BOUNDARY);
 
     public MinLength {
-        Objects.requireNonNull(value, "value");
         if (value < BOUNDARY)
             throw new IllegalArgumentException("minLength must be at least " + BOUNDARY);
     }
