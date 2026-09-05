@@ -1,9 +1,13 @@
 package com.jrobertgardzinski.password.config;
 
+import com.jrobertgardzinski.config.ConfigValue;
+
+import java.util.Objects;
+
 /**
  * The special characters a password may use: a non-empty subset of {@link #ALLOWED}, without repeats.
  */
-public record SpecialChars(String value) {
+public record SpecialChars(String value) implements ConfigValue<String> {
 
     /** The name this rule goes by on every level of a deployment's configuration ladder. */
     public static final String KEY = "security.password.policy.special.chars";
@@ -12,6 +16,7 @@ public record SpecialChars(String value) {
     public static final SpecialChars DEFAULT = new SpecialChars("!@#$%^&*");
 
     public SpecialChars {
+        Objects.requireNonNull(value, "value");
         if (value == null || value.isEmpty())
             throw new IllegalArgumentException("specialChars must not be empty");
         for (char c : value.toCharArray()) {
@@ -20,5 +25,15 @@ public record SpecialChars(String value) {
         }
         if (value.chars().distinct().count() != value.length())
             throw new IllegalArgumentException("specialChars must not contain duplicate characters");
+    }
+
+    @Override
+    public String key() {
+        return KEY;
+    }
+
+    @Override
+    public String defaultValue() {
+        return DEFAULT.value();
     }
 }
