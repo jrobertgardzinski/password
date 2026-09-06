@@ -21,4 +21,9 @@ public record RequiresUppercase(Boolean value) implements ConfigValue<Boolean> {
     public Boolean defaultValue() {
         return DEFAULT.value();
     }
+
+    @Override
+    public RequiresUppercase holding(Boolean value) {
+        return new RequiresUppercase(value);
+    }
 }

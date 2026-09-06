@@ -27,4 +27,9 @@ public record MinLength(Integer value) implements ConfigValue<Integer> {
     public Integer defaultValue() {
         return DEFAULT.value();
     }
+
+    @Override
+    public MinLength holding(Integer value) {
+        return new MinLength(value);
+    }
 }

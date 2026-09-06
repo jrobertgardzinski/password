@@ -33,4 +33,9 @@ public record SpecialChars(String value) implements ConfigValue<String> {
     public String defaultValue() {
         return DEFAULT.value();
     }
+
+    @Override
+    public SpecialChars holding(String value) {
+        return new SpecialChars(value);
+    }
 }

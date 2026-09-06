@@ -52,8 +52,16 @@ class ConfigValueLawTest {
                     .as("%s.KEY must be a public static String", type.getSimpleName()).isTrue();
             assertThat(shipped.key()).as("%s.key() answers KEY", type.getSimpleName()).isEqualTo(keyField.get(null));
             assertThat(shipped.key()).startsWith("security.password.policy.");
+            assertThat(holdingAnswersWithItsOwnType(shipped)).as("%s.holding() answers with a %s", type.getSimpleName(), type.getSimpleName()).isTrue();
             assertThat(keys.add(shipped.key())).as("the key %s is claimed by two types", shipped.key()).isTrue();
         }
+    }
+
+    /** {@code holding} is the constructor in disguise: same type back, same gate. */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static boolean holdingAnswersWithItsOwnType(ConfigValue<?> shipped) {
+        ConfigValue held = ((ConfigValue) shipped).holding(shipped.value());
+        return held.getClass() == shipped.getClass() && held.equals(shipped);
     }
 
     /** Every top-level type in the package, found by its source file, so a new one is never overlooked. */

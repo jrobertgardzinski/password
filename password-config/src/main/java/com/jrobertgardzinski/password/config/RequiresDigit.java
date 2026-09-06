@@ -21,4 +21,9 @@ public record RequiresDigit(Boolean value) implements ConfigValue<Boolean> {
     public Boolean defaultValue() {
         return DEFAULT.value();
     }
+
+    @Override
+    public RequiresDigit holding(Boolean value) {
+        return new RequiresDigit(value);
+    }
 }

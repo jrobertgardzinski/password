@@ -21,4 +21,9 @@ public record RequiresLowercase(Boolean value) implements ConfigValue<Boolean> {
     public Boolean defaultValue() {
         return DEFAULT.value();
     }
+
+    @Override
+    public RequiresLowercase holding(Boolean value) {
+        return new RequiresLowercase(value);
+    }
 }
