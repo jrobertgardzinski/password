@@ -31,4 +31,10 @@ public class CreatePasswordHash {
         Outcome<PlaintextPassword> result = constraints.validate(password);
         return result.map(hashAlgorithm::hash);
     }
+
+    public HashedPassword create(PlaintextPassword plaintextPassword) {
+
+        Outcome<PlaintextPassword> result = constraints.validate(plaintextPassword);
+        return result.map(hashAlgorithm::hash);
+    }
 }
