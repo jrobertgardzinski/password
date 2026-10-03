@@ -60,6 +60,27 @@ class CreatePasswordHashRulesTest {
         assertThat(useCase.create(ANY_PASSWORD)).isInstanceOf(Outcome.Allowed.class);
     }
 
+    /**
+     * The variant by its own name. The password path has no exception-to-code translation of its
+     * own (the address path has {@code _EmailCandidate}), so the refusal is produced by the
+     * generic {@code Constraints} itself: the policy is skipped and nothing is hashed. What the
+     * entry READS LIKE is deliberately not asserted here — today it is the exception's message
+     * rather than a code, and that is a recorded finding about the password path, not a rule this
+     * test should freeze.
+     */
+    @Example
+    @Label("a supplier that breaks the password invariant → rejected due to invariant breakage, policy skipped")
+    void brokenInvariantIsItsOwnOutcomeVariant() {
+        List<String> policyCodes = CONSTRAINTS.stream().map(ErrorConstraint::code).toList();
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), CONSTRAINTS);
+
+        Outcome<HashedPassword> result = useCase.create(() -> PlaintextPassword.of("   "));
+
+        assertThat(result).isInstanceOf(Outcome.RejectedDueToInvariantBreakage.class);
+        assertThat(result.errorCodes()).doesNotContainAnyElementsOf(policyCodes);
+        assertThat(result.findValue()).isEmpty();
+    }
+
     @Provide
     Arbitrary<Set<ErrorConstraint<PlaintextPassword>>> constraintCombinations() {
         return Arbitraries.subsetOf(CONSTRAINTS).ofMinSize(1);
@@ -80,6 +101,16 @@ class CreatePasswordHashRulesTest {
         return new ErrorConstraint<>() {
             @Override public boolean isSatisfied(PlaintextPassword p) { return true; }
             @Override public String code() { return "UNUSED"; }
+        };
+    }
+
+    /** Proves nothing was hashed: being called at all is the failure. */
+    private static HashAlgorithmPort explodingAlgorithm() {
+        return new HashAlgorithmPort() {
+            @Override public HashedPassword hash(PlaintextPassword p) {
+                throw new AssertionError("must not hash a password whose invariant is broken");
+            }
+            @Override public boolean verify(HashedPassword h, PlaintextPassword p) { return false; }
         };
     }
 
