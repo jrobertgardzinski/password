@@ -28,7 +28,12 @@ public class CreatePasswordHash {
 
     public sealed interface Result {
         record Success(HashedPassword hashedPassword) implements Result {}
-        record Failure(List<PasswordError> errors) implements Result {
+
+        /**
+         * The rules broken, and the policy they were judged against: the policy can change between
+         * two attempts, so the codes alone would not say what "too short" meant for this one.
+         */
+        record Failure(List<PasswordError> errors, PasswordPolicy policy) implements Result {
             public Failure {
                 errors = List.copyOf(errors);
             }
@@ -59,7 +64,7 @@ public class CreatePasswordHash {
             return new Result.Success(hashAlgorithm.hash(plaintextPassword));
         }
         else {
-            return new Result.Failure(errors);
+            return new Result.Failure(errors, policy);
         }
     }
 }

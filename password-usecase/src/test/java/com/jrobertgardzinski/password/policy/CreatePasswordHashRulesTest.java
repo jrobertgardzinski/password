@@ -27,11 +27,13 @@ class CreatePasswordHashRulesTest {
     private static final PasswordPolicy DEFAULTS = PasswordPolicy.withDefaults();
 
     @Property
-    @Label("every broken rule is named, in policy order, and nothing is hashed")
+    @Label("every broken rule is named, in policy order, with the policy it was judged against; nothing is hashed")
     void brokenRulesAreNamedInPolicyOrder(@ForAll("refusals") Tuple.Tuple2<String, List<PasswordError>> row) {
         CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
 
-        assertThat(failure(useCase, row.get1(), DEFAULTS)).containsExactlyElementsOf(row.get2());
+        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of(row.get1()), DEFAULTS);
+
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(row.get2(), DEFAULTS));
     }
 
     @Provide
@@ -70,24 +72,18 @@ class CreatePasswordHashRulesTest {
     }
 
     @Example
-    @Label("the minimum length and the special characters are the policy's, not the defaults")
+    @Label("the minimum length and the special characters are the policy's, not the defaults, and the refusal says which policy")
     void parametersComeFromThePolicy() {
         PasswordPolicy strict = PasswordPolicy.defaultsExcept(new MinLength(12), new SpecialChars("#?!"));
         CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
 
-        assertThat(failure(useCase, "Str0ngPass*", strict))
-                .containsExactly(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.SPECIAL_CHAR_REQUIRED);
+        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("Str0ngPass*"), strict);
+
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(
+                List.of(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.SPECIAL_CHAR_REQUIRED), strict));
     }
 
-    // --- helpers and stubs ---
-
-    /** The codes a refused attempt carries; fails the test when the attempt was not refused. */
-    private static List<PasswordError> failure(CreatePasswordHash useCase, String password, PasswordPolicy policy) {
-        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of(password), policy);
-        assertThat(result).as("expected the password to be refused: " + password)
-                .isInstanceOf(CreatePasswordHash.Result.Failure.class);
-        return ((CreatePasswordHash.Result.Failure) result).errors();
-    }
+    // --- stubs ---
 
     /** Proves nothing was hashed: being called at all is the failure. */
     private static HashAlgorithmPort explodingAlgorithm() {
