@@ -1,27 +1,20 @@
 package com.jrobertgardzinski.password.policy;
 
+import com.jrobertgardzinski.password.config.MinLength;
+import com.jrobertgardzinski.password.config.RequiresDigit;
+import com.jrobertgardzinski.password.config.RequiresLowercase;
+import com.jrobertgardzinski.password.config.RequiresUppercase;
+import com.jrobertgardzinski.password.config.SpecialChars;
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
+import com.jrobertgardzinski.password.domain.PasswordError;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
-import com.jrobertgardzinski.password.config.MinLength;
-import com.jrobertgardzinski.password.config.SpecialChars;
-import com.jrobertgardzinski.util.constraint.ErrorConstraint;
-import com.jrobertgardzinski.util.constraint.Outcome;
-import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import net.jqwik.api.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,85 +23,77 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Story("Create Password Hash")
 class CreatePasswordHashRulesTest {
 
-    private static final Supplier<PlaintextPassword> ANY_PASSWORD = () -> PlaintextPassword.of("P@ssw0rd1!");
+    /** min 5, special "!@#$%^&*", lowercase + uppercase + digit required. */
+    private static final PasswordPolicy DEFAULTS = PasswordPolicy.withDefaults();
 
-    private static final List<ErrorConstraint<PlaintextPassword>> CONSTRAINTS = List.of(
-            alwaysFailing(new _MinLengthConstraint(MinLength.DEFAULT)),
-            alwaysFailing(new _ContainsUppercaseConstraint()),
-            alwaysFailing(new _ContainsLowercaseConstraint()),
-            alwaysFailing(new _ContainsDigitConstraint()),
-            alwaysFailing(new _ContainsSpecialCharConstraint(SpecialChars.DEFAULT))
-    );
+    @Property
+    @Label("every broken rule is named, in policy order, and nothing is hashed")
+    void brokenRulesAreNamedInPolicyOrder(@ForAll("refusals") Tuple.Tuple2<String, List<PasswordError>> row) {
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
 
-    @Property(tries = 10)
-    @Label("if any subset of constraints is unsatisfied → rejected with all their codes")
-    void anySubsetOfUnsatisfiedConstraintsCausesRejection(
-            @ForAll("constraintCombinations") Set<ErrorConstraint<PlaintextPassword>> brokenConstraints) {
-        List<String> expectedCodes = brokenConstraints.stream().map(ErrorConstraint::code).toList();
-        Allure.parameter("broken constraints", expectedCodes);
-
-        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), new ArrayList<>(brokenConstraints));
-        Outcome<HashedPassword> result = useCase.create(ANY_PASSWORD);
-        assertThat(result).isInstanceOf(Outcome.Rejected.class);
-        assertThat(((Outcome.Rejected<HashedPassword>) result).errorCodes()).containsAll(expectedCodes);
-    }
-
-    @Example
-    @Label("all constraints satisfied → allowed")
-    void allConstraintsSatisfiedAllows() {
-        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), List.of(passing()));
-        assertThat(useCase.create(ANY_PASSWORD)).isInstanceOf(Outcome.Allowed.class);
-    }
-
-    /**
-     * The variant by its own name. The password path has no exception-to-code translation of its
-     * own (the address path has {@code _EmailCandidate}), so the refusal is produced by the
-     * generic {@code Constraints} itself: the policy is skipped and nothing is hashed. What the
-     * entry READS LIKE is deliberately not asserted here — today it is the exception's message
-     * rather than a code, and that is a recorded finding about the password path, not a rule this
-     * test should freeze.
-     */
-    @Example
-    @Label("a supplier that breaks the password invariant → rejected due to invariant breakage, policy skipped")
-    void brokenInvariantIsItsOwnOutcomeVariant() {
-        List<String> policyCodes = CONSTRAINTS.stream().map(ErrorConstraint::code).toList();
-        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), CONSTRAINTS);
-
-        Outcome<HashedPassword> result = useCase.create(() -> PlaintextPassword.of("   "));
-
-        assertThat(result).isInstanceOf(Outcome.RejectedDueToInvariantBreakage.class);
-        assertThat(result.errorCodes()).doesNotContainAnyElementsOf(policyCodes);
-        assertThat(result.findValue()).isEmpty();
+        assertThat(failure(useCase, row.get1(), DEFAULTS)).containsExactlyElementsOf(row.get2());
     }
 
     @Provide
-    Arbitrary<Set<ErrorConstraint<PlaintextPassword>>> constraintCombinations() {
-        return Arbitraries.subsetOf(CONSTRAINTS).ofMinSize(1);
+    Arbitrary<Tuple.Tuple2<String, List<PasswordError>>> refusals() {
+        return Arbitraries.of(
+                Tuple.of("weak", List.of(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.UPPERCASE_REQUIRED,
+                        PasswordError.DIGIT_REQUIRED, PasswordError.SPECIAL_CHAR_REQUIRED)),
+                Tuple.of("Ab1!", List.of(PasswordError.MIN_LENGTH_NOT_MET)),
+                Tuple.of("STRONGPASS1!", List.of(PasswordError.LOWERCASE_REQUIRED)),
+                Tuple.of("strongpass1!", List.of(PasswordError.UPPERCASE_REQUIRED)),
+                Tuple.of("StrongPass!", List.of(PasswordError.DIGIT_REQUIRED)),
+                Tuple.of("StrongPass1", List.of(PasswordError.SPECIAL_CHAR_REQUIRED)),
+                Tuple.of("StrongPass1?", List.of(PasswordError.SPECIAL_CHAR_REQUIRED)));
     }
 
-    // --- stubs ---
+    @Example
+    @Label("a password that meets every rule comes back hashed by the algorithm")
+    void passingPasswordIsHashed() {
+        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm());
 
-    private static ErrorConstraint<PlaintextPassword> alwaysFailing(ErrorConstraint<PlaintextPassword> delegate) {
-        String name = delegate.getClass().getSimpleName();
-        return new ErrorConstraint<>() {
-            @Override public boolean isSatisfied(PlaintextPassword p) { return false; }
-            @Override public String code() { return delegate.code(); }
-            @Override public String toString() { return name; }
-        };
+        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("Str0ng!pass"), DEFAULTS);
+
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:Str0ng!pass")));
     }
 
-    private static ErrorConstraint<PlaintextPassword> passing() {
-        return new ErrorConstraint<>() {
-            @Override public boolean isSatisfied(PlaintextPassword p) { return true; }
-            @Override public String code() { return "UNUSED"; }
-        };
+    @Example
+    @Label("a rule switched off in the policy is not applied")
+    void switchedOffRulesAreNotApplied() {
+        PasswordPolicy lenient = new PasswordPolicy(MinLength.DEFAULT, SpecialChars.DEFAULT,
+                new RequiresUppercase(false), new RequiresLowercase(false), new RequiresDigit(false));
+        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm());
+
+        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("!!!!!"), lenient);
+
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:!!!!!")));
+    }
+
+    @Example
+    @Label("the minimum length and the special characters are the policy's, not the defaults")
+    void parametersComeFromThePolicy() {
+        PasswordPolicy strict = PasswordPolicy.defaultsExcept(new MinLength(12), new SpecialChars("#?!"));
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
+
+        assertThat(failure(useCase, "Str0ngPass*", strict))
+                .containsExactly(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.SPECIAL_CHAR_REQUIRED);
+    }
+
+    // --- helpers and stubs ---
+
+    /** The codes a refused attempt carries; fails the test when the attempt was not refused. */
+    private static List<PasswordError> failure(CreatePasswordHash useCase, String password, PasswordPolicy policy) {
+        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of(password), policy);
+        assertThat(result).as("expected the password to be refused: " + password)
+                .isInstanceOf(CreatePasswordHash.Result.Failure.class);
+        return ((CreatePasswordHash.Result.Failure) result).errors();
     }
 
     /** Proves nothing was hashed: being called at all is the failure. */
     private static HashAlgorithmPort explodingAlgorithm() {
         return new HashAlgorithmPort() {
             @Override public HashedPassword hash(PlaintextPassword p) {
-                throw new AssertionError("must not hash a password whose invariant is broken");
+                throw new AssertionError("must not hash a refused password");
             }
             @Override public boolean verify(HashedPassword h, PlaintextPassword p) { return false; }
         };
@@ -116,7 +101,7 @@ class CreatePasswordHashRulesTest {
 
     private static HashAlgorithmPort stubAlgorithm() {
         return new HashAlgorithmPort() {
-            @Override public HashedPassword hash(PlaintextPassword p) { return new HashedPassword("stub"); }
+            @Override public HashedPassword hash(PlaintextPassword p) { return new HashedPassword("hash:" + p.value()); }
             @Override public boolean verify(HashedPassword h, PlaintextPassword p) { return false; }
         };
     }

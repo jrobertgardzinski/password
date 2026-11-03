@@ -1,11 +1,6 @@
 package com.jrobertgardzinski.password.policy;
 
-import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import com.jrobertgardzinski.password.config.*;
-import com.jrobertgardzinski.util.constraint.ErrorConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The rules a password must satisfy, held together as one value.
@@ -38,13 +33,4 @@ public record PasswordPolicy(
                 RequiresUppercase.DEFAULT, RequiresLowercase.DEFAULT, RequiresDigit.DEFAULT);
     }
 
-    List<ErrorConstraint<PlaintextPassword>> constraints() {
-        var list = new ArrayList<ErrorConstraint<PlaintextPassword>>();
-        list.add(new _MinLengthConstraint(minLength));
-        if (requiresLowercase.value()) list.add(new _ContainsLowercaseConstraint());
-        if (requiresUppercase.value()) list.add(new _ContainsUppercaseConstraint());
-        if (requiresDigit.value())     list.add(new _ContainsDigitConstraint());
-        list.add(new _ContainsSpecialCharConstraint(specialChars));
-        return List.copyOf(list);
-    }
 }
