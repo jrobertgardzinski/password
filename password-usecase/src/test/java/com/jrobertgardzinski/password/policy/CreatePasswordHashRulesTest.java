@@ -34,7 +34,7 @@ class CreatePasswordHashRulesTest {
 
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of(row.get1()));
 
-        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(row.get2(), DEFAULTS));
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result(null, row.get2(), DEFAULTS));
     }
 
     @Provide
@@ -57,7 +57,7 @@ class CreatePasswordHashRulesTest {
 
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("Str0ng!pass"));
 
-        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:Str0ng!pass")));
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result(new HashedPassword("hash:Str0ng!pass"), List.of(), DEFAULTS));
     }
 
     @Example
@@ -69,7 +69,7 @@ class CreatePasswordHashRulesTest {
 
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("!!!!!"));
 
-        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:!!!!!")));
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result(new HashedPassword("hash:!!!!!"), List.of(), lenient));
     }
 
     @Example
@@ -80,7 +80,7 @@ class CreatePasswordHashRulesTest {
 
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("Str0ngPass*"));
 
-        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result(null,
                 List.of(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.SPECIAL_CHAR_REQUIRED), strict));
     }
 
@@ -91,7 +91,7 @@ class CreatePasswordHashRulesTest {
 
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("   "));
 
-        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(List.of(PasswordError.PASSWORD_BLANK), DEFAULTS));
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result(null, List.of(PasswordError.PASSWORD_BLANK), DEFAULTS));
     }
 
     @Example
@@ -105,9 +105,8 @@ class CreatePasswordHashRulesTest {
         inForce.set(strict);
         CreatePasswordHash.Result underStrict = useCase.create(() -> PlaintextPassword.of("Str0ng!pass"));
 
-        assertThat(underDefaults).isInstanceOf(CreatePasswordHash.Result.Failure.class)
-                .extracting("policy").isEqualTo(DEFAULTS);
-        assertThat(underStrict).isEqualTo(new CreatePasswordHash.Result.Failure(List.of(PasswordError.MIN_LENGTH_NOT_MET), strict));
+        assertThat(underDefaults.policy()).isEqualTo(DEFAULTS);
+        assertThat(underStrict).isEqualTo(new CreatePasswordHash.Result(null, List.of(PasswordError.MIN_LENGTH_NOT_MET), strict));
     }
 
     // --- stubs ---

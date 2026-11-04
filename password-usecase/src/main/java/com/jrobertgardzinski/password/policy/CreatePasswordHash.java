@@ -32,17 +32,14 @@ public class CreatePasswordHash {
         this.passwordPolicyInForce = passwordPolicyInForce;
     }
 
-    public sealed interface Result {
-        record Success(HashedPassword hashedPassword) implements Result {}
-
-        /**
-         * The rules broken, and the policy they were judged against: the policy can change between
-         * two attempts, so the codes alone would not say what "too short" meant for this one.
-         */
-        record Failure(List<PasswordError> errors, PasswordPolicy policy) implements Result {
-            public Failure {
-                errors = List.copyOf(errors);
-            }
+    /**
+     * The hash, present only when every rule passed ({@code null} otherwise); the rules broken, in
+     * policy order; and the policy they were judged against, because that policy can change between
+     * two attempts, so the codes alone would not say what "too short" meant for this one.
+     */
+    public record Result(HashedPassword hashedPassword, List<PasswordError> errors, PasswordPolicy policy) {
+        public Result {
+            errors = List.copyOf(errors);
         }
     }
 
@@ -52,7 +49,7 @@ public class CreatePasswordHash {
         try {
             plaintextPassword = candidate.get();
         } catch (IllegalArgumentException blank) {
-            return new Result.Failure(List.of(PasswordError.PASSWORD_BLANK), passwordPolicy);
+            return new Result(null, List.of(PasswordError.PASSWORD_BLANK), passwordPolicy);
         }
         List<PasswordError> errors = new LinkedList<>();
         String password = plaintextPassword.value();
@@ -74,10 +71,10 @@ public class CreatePasswordHash {
         }
 
         if (errors.isEmpty()) {
-            return new Result.Success(hashAlgorithm.hash(plaintextPassword));
+            return new Result(hashAlgorithm.hash(plaintextPassword), errors, passwordPolicy);
         }
         else {
-            return new Result.Failure(errors, passwordPolicy);
+            return new Result(null, errors, passwordPolicy);
         }
     }
 }
