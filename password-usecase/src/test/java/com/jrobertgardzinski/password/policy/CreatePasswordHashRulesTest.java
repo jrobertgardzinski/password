@@ -15,6 +15,7 @@ import io.qameta.allure.Story;
 import net.jqwik.api.*;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,9 +30,9 @@ class CreatePasswordHashRulesTest {
     @Property
     @Label("every broken rule is named, in policy order, with the policy it was judged against; nothing is hashed")
     void brokenRulesAreNamedInPolicyOrder(@ForAll("refusals") Tuple.Tuple2<String, List<PasswordError>> row) {
-        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), () -> DEFAULTS);
 
-        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of(row.get1()), DEFAULTS);
+        CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of(row.get1()));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(row.get2(), DEFAULTS));
     }
@@ -52,9 +53,9 @@ class CreatePasswordHashRulesTest {
     @Example
     @Label("a password that meets every rule comes back hashed by the algorithm")
     void passingPasswordIsHashed() {
-        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm());
+        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), () -> DEFAULTS);
 
-        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("Str0ng!pass"), DEFAULTS);
+        CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("Str0ng!pass"));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:Str0ng!pass")));
     }
@@ -64,9 +65,9 @@ class CreatePasswordHashRulesTest {
     void switchedOffRulesAreNotApplied() {
         PasswordPolicy lenient = new PasswordPolicy(MinLength.DEFAULT, SpecialChars.DEFAULT,
                 new RequiresUppercase(false), new RequiresLowercase(false), new RequiresDigit(false));
-        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm());
+        CreatePasswordHash useCase = new CreatePasswordHash(stubAlgorithm(), () -> lenient);
 
-        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("!!!!!"), lenient);
+        CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("!!!!!"));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result.Success(new HashedPassword("hash:!!!!!")));
     }
@@ -75,12 +76,38 @@ class CreatePasswordHashRulesTest {
     @Label("the minimum length and the special characters are the policy's, not the defaults, and the refusal says which policy")
     void parametersComeFromThePolicy() {
         PasswordPolicy strict = PasswordPolicy.defaultsExcept(new MinLength(12), new SpecialChars("#?!"));
-        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm());
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), () -> strict);
 
-        CreatePasswordHash.Result result = useCase.create(PlaintextPassword.of("Str0ngPass*"), strict);
+        CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("Str0ngPass*"));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(
                 List.of(PasswordError.MIN_LENGTH_NOT_MET, PasswordError.SPECIAL_CHAR_REQUIRED), strict));
+    }
+
+    @Example
+    @Label("a candidate that does not construct is PASSWORD_BLANK alone, the policy skipped, nothing hashed")
+    void blankCandidateIsACodeOfItsOwn() {
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), () -> DEFAULTS);
+
+        CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("   "));
+
+        assertThat(result).isEqualTo(new CreatePasswordHash.Result.Failure(List.of(PasswordError.PASSWORD_BLANK), DEFAULTS));
+    }
+
+    @Example
+    @Label("the policy is asked per attempt: the same judge, two attempts, two policies named")
+    void policyIsAskedPerAttempt() {
+        PasswordPolicy strict = PasswordPolicy.defaultsExcept(new MinLength(12), SpecialChars.DEFAULT);
+        AtomicReference<PasswordPolicy> inForce = new AtomicReference<>(DEFAULTS);
+        CreatePasswordHash useCase = new CreatePasswordHash(explodingAlgorithm(), inForce::get);
+
+        CreatePasswordHash.Result underDefaults = useCase.create(() -> PlaintextPassword.of("weak"));
+        inForce.set(strict);
+        CreatePasswordHash.Result underStrict = useCase.create(() -> PlaintextPassword.of("Str0ng!pass"));
+
+        assertThat(underDefaults).isInstanceOf(CreatePasswordHash.Result.Failure.class)
+                .extracting("policy").isEqualTo(DEFAULTS);
+        assertThat(underStrict).isEqualTo(new CreatePasswordHash.Result.Failure(List.of(PasswordError.MIN_LENGTH_NOT_MET), strict));
     }
 
     // --- stubs ---

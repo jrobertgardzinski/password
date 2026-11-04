@@ -7,12 +7,16 @@ import com.jrobertgardzinski.password.domain.PlaintextPassword;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
- * Judges a plaintext password against a policy and, if it passes, hashes it. There is no way to
- * obtain the hash of a password that failed: a refused one comes back as {@link Result.Failure}
- * with every broken rule at once, in policy order, so a form can show all of them in one round.
+ * Judges a plaintext password against the policy in force and, if it passes, hashes it. There is
+ * no way to obtain the hash of a password that failed: a refused one comes back as
+ * {@link Result.Failure} with every broken rule at once, in policy order, so a form can show all
+ * of them in one round. A candidate that does not construct (blank) is refused as
+ * {@link PasswordError#PASSWORD_BLANK} with the policy skipped. The policy is asked once per
+ * attempt, so a refusal names the policy it was judged against.
  */
 public class CreatePasswordHash {
 
@@ -21,9 +25,11 @@ public class CreatePasswordHash {
     private static final Pattern DIGIT = Pattern.compile("\\d");
 
     private final HashAlgorithmPort hashAlgorithm;
+    private final PasswordPolicyInForce passwordPolicyInForce;
 
-    public CreatePasswordHash(HashAlgorithmPort hashAlgorithm) {
+    public CreatePasswordHash(HashAlgorithmPort hashAlgorithm, PasswordPolicyInForce passwordPolicyInForce) {
         this.hashAlgorithm = hashAlgorithm;
+        this.passwordPolicyInForce = passwordPolicyInForce;
     }
 
     public sealed interface Result {
@@ -40,22 +46,29 @@ public class CreatePasswordHash {
         }
     }
 
-    public Result create(PlaintextPassword plaintextPassword, PasswordPolicy policy) {
+    public Result create(Supplier<PlaintextPassword> candidate) {
+        PasswordPolicy passwordPolicy = passwordPolicyInForce.current();
+        PlaintextPassword plaintextPassword;
+        try {
+            plaintextPassword = candidate.get();
+        } catch (IllegalArgumentException blank) {
+            return new Result.Failure(List.of(PasswordError.PASSWORD_BLANK), passwordPolicy);
+        }
         List<PasswordError> errors = new LinkedList<>();
         String password = plaintextPassword.value();
-        if (password.length() < policy.minLength().value()) {
+        if (password.length() < passwordPolicy.minLength().value()) {
             errors.add(PasswordError.MIN_LENGTH_NOT_MET);
         }
-        if (policy.requiresLowercase().value() && !LOWERCASE.matcher(password).find()) {
+        if (passwordPolicy.requiresLowercase().value() && !LOWERCASE.matcher(password).find()) {
             errors.add(PasswordError.LOWERCASE_REQUIRED);
         }
-        if (policy.requiresUppercase().value() && !UPPERCASE.matcher(password).find()) {
+        if (passwordPolicy.requiresUppercase().value() && !UPPERCASE.matcher(password).find()) {
             errors.add(PasswordError.UPPERCASE_REQUIRED);
         }
-        if (policy.requiresDigit().value() && !DIGIT.matcher(password).find()) {
+        if (passwordPolicy.requiresDigit().value() && !DIGIT.matcher(password).find()) {
             errors.add(PasswordError.DIGIT_REQUIRED);
         }
-        String specialChars = policy.specialChars().value();
+        String specialChars = passwordPolicy.specialChars().value();
         if (password.chars().noneMatch(c -> specialChars.indexOf(c) >= 0)) {
             errors.add(PasswordError.SPECIAL_CHAR_REQUIRED);
         }
@@ -64,7 +77,7 @@ public class CreatePasswordHash {
             return new Result.Success(hashAlgorithm.hash(plaintextPassword));
         }
         else {
-            return new Result.Failure(errors, policy);
+            return new Result.Failure(errors, passwordPolicy);
         }
     }
 }
