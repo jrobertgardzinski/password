@@ -8,6 +8,7 @@ import com.jrobertgardzinski.password.config.SpecialChars;
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PasswordError;
+import com.jrobertgardzinski.password.domain.PasswordStatus;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -58,6 +59,7 @@ class CreatePasswordHashRulesTest {
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("Str0ng!pass"));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result(new HashedPassword("hash:Str0ng!pass"), List.of(), DEFAULTS));
+        assertThat(result.status()).isEqualTo(PasswordStatus.PASSED);
     }
 
     @Example
@@ -92,6 +94,7 @@ class CreatePasswordHashRulesTest {
         CreatePasswordHash.Result result = useCase.create(() -> PlaintextPassword.of("   "));
 
         assertThat(result).isEqualTo(new CreatePasswordHash.Result(null, List.of(PasswordError.PASSWORD_BLANK), DEFAULTS));
+        assertThat(result.status()).isEqualTo(PasswordStatus.REJECTED);
     }
 
     @Example

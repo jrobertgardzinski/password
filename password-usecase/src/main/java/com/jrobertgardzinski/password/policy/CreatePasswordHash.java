@@ -3,6 +3,7 @@ package com.jrobertgardzinski.password.policy;
 import com.jrobertgardzinski.password.domain.HashAlgorithmPort;
 import com.jrobertgardzinski.password.domain.HashedPassword;
 import com.jrobertgardzinski.password.domain.PasswordError;
+import com.jrobertgardzinski.password.domain.PasswordStatus;
 import com.jrobertgardzinski.password.domain.PlaintextPassword;
 
 import java.util.LinkedList;
@@ -12,9 +13,9 @@ import java.util.regex.Pattern;
 
 /**
  * Judges a plaintext password against the policy in force and, if it passes, hashes it. There is
- * no way to obtain the hash of a password that failed: a refused one comes back as
- * {@link Result.Failure} with every broken rule at once, in policy order, so a form can show all
- * of them in one round. A candidate that does not construct (blank) is refused as
+ * no way to obtain the hash of a password that failed: a refused one comes back
+ * {@link PasswordStatus#REJECTED} with every broken rule at once, in policy order, so a form can
+ * show all of them in one round. A candidate that does not construct (blank) is refused as
  * {@link PasswordError#PASSWORD_BLANK} with the policy skipped. The policy is asked once per
  * attempt, so a refusal names the policy it was judged against.
  */
@@ -40,6 +41,14 @@ public class CreatePasswordHash {
     public record Result(HashedPassword hashedPassword, List<PasswordError> errors, PasswordPolicy policy) {
         public Result {
             errors = List.copyOf(errors);
+        }
+
+        /** Read off the errors, so the two cannot disagree. */
+        public PasswordStatus status() {
+            if (errors.isEmpty()) {
+                return PasswordStatus.PASSED;
+            }
+            return PasswordStatus.REJECTED;
         }
     }
 
